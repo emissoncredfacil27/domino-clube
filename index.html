@@ -267,6 +267,7 @@ body.match-mode #hand { display: flex; align-items: flex-end; justify-content: c
 .stone-drag-ghost svg { width: 52px; height: 100px; }
 .stone-drop-target { position: fixed; z-index: 1000; width: 64px; height: 64px; padding: 0; margin: 0; transform: translate(-50%,-50%); border: 2px dashed #e5fbd9; border-radius: 50%; background: #153f33e6; color: #edffe1; font-size: 30px; box-shadow: 0 0 0 5px #83d8a125; }
 .stone-drop-target.drop-ready, .stone-drop-target:focus-visible { background: #b5ef9e; color: #163c2c; border-style: solid; outline: 3px solid #fff; }
+#stoneSamples .tile svg { width: 45px; height: 90px; }
 </style><header><b>▣ DOMINÓ <span class="gold">CLUBE</span></b><span class="badge">SÓ ENTRE AMIGOS</span></header><main><p id="network" class="status" role="status" aria-live="polite">Crie uma mesa ou entre pelo código de um amigo.</p><p id="error" class="error" role="alert"></p>
 <section id="inicio" class="active"><span class="gold">SUA TURMA. SUA MESA.</span><h1>Amigos de verdade.<br>A mesma mesa.</h1><p class="muted">Jogue online com 2 ou 4 pessoas. Compartilhe o convite e espere seus amigos entrarem.</p><button onclick="go('criar')">＋ Criar mesa</button><button class="secondary" onclick="go('entrar')">Entrar na mesa</button><div class="grid"><div class="card"><h3>Clássico</h3><p>Encaixe as pedras e esvazie sua mão.</p></div><div class="card"><h3>Ponta de 5</h3><p>Pontue com a soma das pontas em múltiplos de cinco.</p></div><div class="card"><h3>Fechado</h3><p>Sem compra: jogue ou passe a vez.</p></div></div><div class="notice">Mantenham o jogo aberto durante a partida. A mesa depende da conexão do dono. Nesta versão, as partidas são gratuitas.</div><div class="card"><h3>Seu histórico neste aparelho</h3><div id="history"></div></div></section>
 <section id="criar"><h2>Monte sua mesa</h2><div class="card"><label>Seu nome<input id="nome" maxlength="32" autocomplete="nickname" placeholder="Como seus amigos te chamam?"></label><div class="grid"><label>Modalidade<select id="modo"><option>Clássico</option><option>Ponta de 5</option><option>Fechado</option></select></label><label>Participantes<select id="qtd"><option value="2">2 jogadores</option><option value="4">4 jogadores • individual</option></select></label></div><p>Sem aposta • entrada gratuita</p><button onclick="createRoom()" id="createBtn">Criar mesa online</button></div></section>
@@ -321,8 +322,8 @@ function oriented(g,t,s){if(!g.chain.length)return [...t];const n=s==='L'?g.chai
 function score(chain){const sum=chain.length?chain[0][0]+chain.at(-1)[1]:0;return sum>0&&sum%5===0?sum:0}
 function play(g,i,index,side,mode){const t=g.hands[i][index],o=oriented(g,t,side);g.hands[i].splice(index,1);side==='L'?g.chain.unshift(o):g.chain.push(o);if(mode==='Ponta de 5')g.points[i]+=score(g.chain);g.passes=0;g.log=H.players[i].name+' jogou '+t.join(' | ')+'.';markAction(g,i,'place')}
 function finish(reason,cancel=false){const g=H.game;if(!g||g.over)return;g.over=true;const sums=g.hands.map(h=>h.reduce((s,t)=>s+t[0]+t[1],0));let candidates=g.hands.map((_,i)=>i);if(!cancel&&H.mode==='Ponta de 5'){const max=Math.max(...g.points);candidates=candidates.filter(i=>g.points[i]===max)}const min=Math.min(...candidates.map(i=>sums[i]));let winners=cancel?[]:candidates.filter(i=>sums[i]===min);g.result={text:cancel?'Rodada cancelada':winners.length===1?H.players[winners[0]].name+' venceu':'Empate',reason,winners,sums};publish()}
-// Cada pedra tem proporção 2:1, pinos em SVG e contraste constante.
-const pipLocations=[[],[[25,25]],[[14,14],[36,36]],[[14,14],[25,25],[36,36]],[[14,14],[36,14],[14,36],[36,36]],[[14,14],[36,14],[25,25],[14,36],[36,36]],[[14,12],[36,12],[14,25],[36,25],[14,38],[36,38]]];
+// Proporção 2:1. A sena gira com a pedra: em pé, duas colunas de três pontos.
+const pipLocations=[[],[[25,25]],[[14,14],[36,36]],[[14,14],[25,25],[36,36]],[[14,14],[36,14],[14,36],[36,36]],[[14,14],[36,14],[25,25],[14,36],[36,36]],[[12,14],[25,14],[38,14],[12,36],[25,36],[38,36]]];
 // Material marfim, pontos pretos e divisória espessa conforme a referência enviada.
 let stonePaintId=0;
 function stoneFace(t){
@@ -425,7 +426,7 @@ setInterval(()=>{if(!hosting){if(hostConn?.open){hostConn.send({type:'ping'});if
 window.addEventListener('resize',()=>{renderBoard();renderSequenceSample()});if(typeof ResizeObserver!=='undefined')new ResizeObserver(renderBoard).observe($('board'));
 window.addEventListener('beforeunload',e=>{if(V&&!V.game?.over){e.preventDefault();e.returnValue=''}});
 syncSoundButtons();
-$('stoneSamples').innerHTML=[[6,6],[5,3],[2,4],[0,1]].map(t=>tile(t)).join('');
+$('stoneSamples').innerHTML=[[6,6],[6,3],[2,4],[0,1]].map(t=>tile(t,'',true)).join('');
 $('guestName').value=read('domino.friends.name','');$('nome').value=read('domino.friends.name','');const codeFromLink=location.hash.startsWith('#mesa=')?location.hash.slice(6):'';if(validCode(codeFromLink)){$('code').value=codeFromLink;go('entrar')}else go('inicio');
 </script></html>
 
