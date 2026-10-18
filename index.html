@@ -512,7 +512,7 @@ body .arena .player-chip { min-height:57px; }
 //# sourceMappingURL=peerjs.min.js.map
 </script><script>
 'use strict';
-const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261018-effects4';
+const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261018-effects5';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uuid=()=>crypto.randomUUID().replaceAll('-','');
 const RECONNECT_MS=120000;
@@ -821,7 +821,7 @@ function showScoreGains(before,next){
  g.points.forEach((value,i)=>{const gain=value-(old.points[i]||0);if(gain>0)showPointsToast(gain,next.room.players[i].name);});
 }
 // Efeitos efêmeros: nunca expõem a face da pedra comprada por outro jogador.
-function effectRoot(){return document.fullscreenElement||document.webkitFullscreenElement||document.body;}
+function effectRoot(){return document.querySelector('#partida.active,#tablePreview.active')||document.fullscreenElement||document.webkitFullscreenElement||document.body;}
 function syncEffectLayer(){for(const id of ['scoreToast','reconnectNotice']){const el=$(id);if(el)effectRoot().appendChild(el);}}
 document.addEventListener('fullscreenchange',syncEffectLayer);
 document.addEventListener('webkitfullscreenchange',syncEffectLayer);
