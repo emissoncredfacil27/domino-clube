@@ -1,81 +1,270 @@
 <!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#102b27"><title>Dominó Clube • Entre amigos</title><style>
-*{box-sizing:border-box}body{margin:0;background:#0a1918;color:#eff8f1;font:16px system-ui}header,main,nav{max-width:1050px;margin:auto;padding:22px}header{display:flex;justify-content:space-between;align-items:center;gap:12px}h1{font-size:clamp(32px,6vw,58px);line-height:1.05;margin:16px 0}h2{font-size:27px}h3{margin-top:0}.muted,small{color:#adc6bb}small{display:block;line-height:1.5}.badge{border:1px solid #5e8171;border-radius:20px;padding:6px 12px;color:#c1dfaa;font-size:12px}.card{background:#142c29;border:1px solid #29483f;border-radius:20px;padding:24px;margin:14px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.gold{color:#e1bf78}button,.button{border:0;border-radius:12px;background:#d8b873;color:#142720;padding:13px 18px;font:600 15px system-ui;cursor:pointer;display:inline-block;text-decoration:none;margin:4px}button.secondary{background:#27463d;color:#eef8ee}button:disabled{opacity:.4;cursor:not-allowed}input,select{display:block;width:100%;background:#0c211e;border:1px solid #48685c;border-radius:10px;padding:13px;color:white;margin:8px 0 18px;font:inherit}input[type=checkbox]{display:inline;width:auto}label{font-size:14px}nav{display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid #27463d}nav button{background:transparent;color:#b6ccbf}section{display:none}section.active{display:block}.table{min-height:230px;border-radius:70px;background:radial-gradient(#245c48,#143d32);border:9px solid #624b32;display:flex;align-items:center;justify-content:center;padding:28px;flex-wrap:wrap;gap:5px;margin:20px 0}.tile{background:var(--stone,#f5f0da);color:#14251d;border:1px solid #c8c3af;border-radius:7px;padding:8px;display:inline-flex;align-items:center;justify-content:center;min-width:50px;gap:7px;font-size:20px;box-shadow:0 3px 0 #99967e;margin:5px}.tile span+span{border-left:1px solid #8c9785;padding-left:7px}.hand .tile{min-height:68px}.status{min-height:28px;color:#e3c583}.notice{background:#263d31;padding:14px;border-left:3px solid #d6b571;line-height:1.5}.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}a{color:#e1c788}footer{padding:20px;color:#a9beb0;font-size:13px}button:focus-visible,a:focus-visible{outline:3px solid white}.seat{padding:14px;border:1px solid #466558;border-radius:12px;margin:8px 0}.error{color:#ffd0b8}.dots{display:grid;grid-template-columns:repeat(3,5px);grid-template-rows:repeat(3,5px);gap:3px;width:21px;height:21px}.dot{border-radius:50%;background:#14251d}.dot.off{visibility:hidden}@media(max-width:600px){header,main,nav{padding:15px}.card{padding:18px}.table{border-radius:35px;padding:15px;min-height:200px}.tile{min-width:46px;padding:7px;gap:6px}.dots{grid-template-columns:repeat(3,4px);grid-template-rows:repeat(3,4px);width:18px;height:18px}.dot{width:4px;height:4px}}
+/* 01. Identidade e componentes comuns. Fontes nativas: sem downloads adicionais. */
+:root {
+  color-scheme: dark;
+  --stone: #f4f5f3;
+  --cloth: #087e80;
+  --ink: #edf8f3;
+  --muted: #a8c4bb;
+  --accent: #daca9a;
+  --line: #31564d;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: #0b201e; color: var(--ink); font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+header, main, nav { max-width: 1050px; margin: auto; padding: 22px; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+h1 { font-size: clamp(32px, 6vw, 58px); line-height: 1.08; margin: 16px 0; letter-spacing: -1.5px; }
+h2 { font-size: 26px; letter-spacing: -.5px; }
+h3 { margin-top: 0; font-size: 18px; }
+small, .muted { color: var(--muted); }
+small { display: block; line-height: 1.5; }
+.gold { color: var(--accent); }
+.badge { border: 1px solid #527b69; border-radius: 30px; padding: 6px 12px; color: #c4d9b6; font-size: 11px; letter-spacing: .5px; }
+.card { background: linear-gradient(135deg, #163b33, #14312d); border: 1px solid var(--line); border-radius: 20px; padding: 24px; margin: 14px 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+a { color: #e2ce96; }
+button, .button { display: inline-block; padding: 13px 18px; margin: 4px; border: 0; border-radius: 12px; background: var(--accent); color: #17352c; font: 650 15px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; text-decoration: none; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+button.secondary { background: #244c40; color: #e2eee7; }
+button:disabled { opacity: .45; cursor: default; }
+button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid #c6e9d5; outline-offset: 3px; }
+input, select { display: block; width: 100%; margin: 8px 0 18px; padding: 13px; color: #eef8f2; background: #0f2a25; border: 1px solid #416859; border-radius: 11px; font: inherit; }
+input[type="checkbox"] { display: inline; width: auto; }
+label { font-size: 14px; }
+section { display: none; }
+section.active { display: block; }
+nav { display: flex; flex-wrap: wrap; gap: 6px; border-top: 1px solid var(--line); }
+nav button { background: transparent; color: #bad0c3; }
+footer { padding: 20px; font-size: 12px; color: #99b7aa; }
+.status { min-height: 26px; color: #dfce9c; }
+.notice { background: #253f31; padding: 14px; border-left: 3px solid #cdb983; }
+.row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+.error { color: #ffd7c1; }
+.seat { margin: 8px 0; padding: 14px; border: 1px solid #3d6555; border-radius: 12px; }
 
-/* Mesa imersiva e peças vetoriais, sem imagens rasterizadas. */
-.tile{border:0!important;background:none!important;box-shadow:none!important;padding:0!important;margin:5px;min-width:0;display:inline-flex;flex:none;line-height:0;vertical-align:middle;transition:transform .16s,filter .16s;position:relative;border-radius:9px}
-.tile svg{width:92px;height:46px;display:block;overflow:visible}
-.tile:hover:not(:disabled){transform:translateY(-4px)}
-.tile:focus-visible{outline:3px solid #ffe2a3;outline-offset:5px}
-.tile:disabled{opacity:1!important;cursor:default;filter:saturate(.75)}
-.hand .tile{min-height:0}.hand .tile svg{width:50px;height:100px}
-.tile.playable{filter:drop-shadow(0 0 4px #e1bf7899)}
-body.match-mode{overflow:hidden;background:#0b1816}
-body.match-mode>header,body.match-mode>nav,body.match-mode>footer{display:none}
-body.match-mode>main{max-width:none;padding:0;margin:0;width:100%;height:100dvh;height:var(--match-height,100dvh)}
-body.match-mode #network{display:none}
-body.match-mode #error:empty{display:none}
-body.match-mode #error:not(:empty){position:fixed;z-index:20;top:calc(env(safe-area-inset-top) + 64px);left:12px;right:12px;background:#502d22;border:1px solid #c88960;padding:12px;border-radius:12px;margin:0;text-align:center;box-shadow:0 8px 24px #0008}
-body.match-mode #partida.active{position:fixed;inset:0;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto auto;gap:8px;padding:calc(env(safe-area-inset-top) + 10px) max(14px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 10px) max(14px,env(safe-area-inset-left));height:100dvh;background:radial-gradient(ellipse at 50% 35%,#1a4536,#0e2823 60%,#091b18);isolation:isolate}
-.match-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
-.match-toolbar h2{font-size:18px;letter-spacing:.5px;margin:0}.match-eyebrow{font-size:10px;letter-spacing:2px;color:#b5cdbb;display:block;margin-bottom:3px}
-.match-tools{display:flex;gap:5px}.match-tools button{padding:9px 12px;margin:0;border:1px solid #58776a;background:#112e27;color:#e4f0e6;font-size:12px}
-body.match-mode #opponents{display:flex;justify-content:center;gap:8px;background:transparent;border:0;padding:0;margin:0;min-width:0;overflow:auto;scrollbar-width:none}
-.player-chip{display:flex;align-items:center;gap:8px;min-width:110px;padding:8px 12px;border:1px solid #486d5c;border-radius:15px;background:#102d25cc;transition:border-color .2s}
-.player-chip.current{border-color:#e2c489;background:#36513c;box-shadow:0 0 0 1px #e2c48944}
-.player-chip.offline{opacity:.6}.avatar{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:linear-gradient(145deg,#d2bd7c,#796631);color:#14281e;font-size:14px;font-weight:800;flex:none}
-.player-copy{min-width:0}.player-copy b{font-size:12px;display:block;white-space:nowrap;max-width:150px;overflow:hidden;text-overflow:ellipsis}.player-copy small{font-size:10px;color:#bed0c3;white-space:nowrap}
-body.match-mode #board{width:100%;height:100%;min-height:0;padding:0;position:relative;border-radius:32px;border:6px solid #745c3a;outline:1px solid #b49c6255;margin:0;display:block;overflow:hidden;background:radial-gradient(ellipse at 45% 40%,#2c7653 0%,#20593e 65%,#194631 100%);box-shadow:inset 0 0 0 3px #152e20,inset 0 0 50px #06190e66,0 8px 25px #0003}
-#board:before{content:'';pointer-events:none;position:absolute;inset:8px;border:1px solid #9cbd8d33;border-radius:20px}
-#board>svg{width:100%;height:100%;display:block;position:relative;z-index:1}
-.board-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;color:#b4d8b9;letter-spacing:2px;font-size:11px}.board-empty b{font-size:27px;color:#c8dbb5;letter-spacing:5px;font-weight:500}
-.turn-strip{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:32px;padding:0 4px}
-.turn-strip p{margin:0;font-size:12px;line-height:1.4;color:#e3d3a7;flex:1}.turn-strip small{font-size:11px;white-space:nowrap;color:#b7c9b9}
-.hand-dock{background:#0a211cbf;border:1px solid #375547;border-radius:19px;padding:11px 14px 10px;box-shadow:0 8px 30px #0003;min-width:0}
-.hand-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}.hand-label{font-size:10px;letter-spacing:2px;color:#c3d5c6;font-weight:700}
-.side-control{display:flex;align-items:center;gap:6px}.side-control label{font-size:11px;color:#bbcdbf}.side-control select{width:auto;margin:0;padding:7px 9px;font-size:12px;background:#15382c;border-color:#4c6b55;border-radius:8px}.hand-controls button{margin:0;padding:8px 12px;font-size:12px}
-body.match-mode #hand{display:flex;align-items:flex-end;justify-content:center;gap:8px;overflow-x:auto;overflow-y:hidden;min-width:0;padding:9px 4px 5px;scrollbar-width:thin;scrollbar-color:#cdb574 #16372b;min-height:104px}
-#hand .tile{margin:0 0 4px;flex:none}#hand .tile.playable:after{content:'';height:3px;border-radius:3px;background:#edcf86;position:absolute;bottom:-6px;left:10px;right:10px}
-#hand .tile:disabled:after{display:none}
-@media(max-width:600px){body.match-mode #partida.active{gap:7px;padding-left:max(9px,env(safe-area-inset-left));padding-right:max(9px,env(safe-area-inset-right))}.match-toolbar h2{font-size:16px}.match-tools button{padding:8px 10px;font-size:11px}.match-eyebrow{font-size:9px}.player-chip{min-width:0;padding:7px 9px;gap:6px;border-radius:12px;flex:1;max-width:180px}.avatar{width:26px;height:26px;font-size:11px}.player-copy b{max-width:100px;font-size:11px}.player-copy small{font-size:9px}body.match-mode #opponents:has(.player-chip:nth-child(4)) .avatar{display:none}body.match-mode #opponents:has(.player-chip:nth-child(4)) .player-chip{padding:7px 5px}body.match-mode #opponents:has(.player-chip:nth-child(4)) .player-copy b{max-width:72px}.hand-dock{padding:9px 8px}.hand-controls{flex-wrap:wrap;gap:5px}.hand-label{font-size:9px}.side-control label{display:none}body.match-mode #hand{gap:7px;justify-content:flex-start}.hand .tile svg{width:41px;height:82px}body.match-mode #hand{min-height:90px}.turn-strip{gap:7px}.turn-strip p{font-size:11px}.turn-strip small{font-size:10px}.tile svg{width:80px;height:40px}}
-@media(orientation:landscape) and (max-height:540px){body.match-mode #partida.active{grid-template-rows:auto minmax(0,1fr) auto;grid-template-columns:minmax(0,1fr) 156px;gap:7px;padding-top:max(6px,env(safe-area-inset-top));padding-bottom:max(6px,env(safe-area-inset-bottom))}.match-toolbar{grid-column:1}.match-toolbar h2{font-size:14px}.match-eyebrow{display:none}.match-tools button{padding:6px 9px}body.match-mode #opponents{grid-column:2;grid-row:1 / 4;flex-direction:column;justify-content:flex-start;gap:6px;overflow:auto}.player-chip{padding:7px;flex:none}.player-copy b{max-width:90px}body.match-mode #board{grid-column:1;grid-row:2;border-radius:24px;border-width:4px}.turn-strip{grid-column:1;grid-row:3;margin-bottom:102px}.hand-dock{position:absolute;left:max(9px,env(safe-area-inset-left));right:174px;bottom:max(6px,env(safe-area-inset-bottom));height:102px;padding:5px 8px}.hand-controls{margin-bottom:0}.hand .tile svg{width:29px;height:58px}body.match-mode #hand{min-height:60px;gap:7px;padding:2px 3px 3px;justify-content:center}.hand-label{font-size:9px}.side-control select{font-size:10px;padding:4px 7px}.hand-controls button{padding:5px 8px;font-size:10px}.turn-strip p{font-size:10px}.turn-strip small{font-size:9px}}
-@media(prefers-reduced-motion:reduce){.tile{transition:none}}
-.sequence-sample{height:210px;border:3px solid #75613c;border-radius:18px;background:radial-gradient(#2c7653,#1b4c35);margin:12px 0 20px;overflow:hidden}.sequence-sample svg{display:block;width:100%;height:100%}
-/* Identidade de jogo: placar legível, feltro petróleo e bordas discretas. */
-:root{--stone:#f4f5f3;--cloth:#087e80}
-body.match-mode #partida.active{background:radial-gradient(ellipse at 50% 40%,#153e3d,#0a2526 75%);gap:7px}
-.match-toolbar{padding:0 3px}.match-eyebrow{color:#75b9b8;font-size:9px;letter-spacing:2.2px}.match-toolbar h2{color:#f4fcfa;font-size:17px}
-.match-tools button{background:#123c3b;border-color:#386665;border-radius:11px;color:#d1e9e6;padding:8px 10px}
-.match-tools .sound-button{min-width:42px;color:#91ded2}.match-tools .sound-button[aria-pressed=false]{color:#849d99}
-.scoreboard{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;gap:7px;padding:2px 3px 5px}
-.score-panel{background:linear-gradient(145deg,#133d3d,#0e292c);border:1px solid #26787d;border-radius:14px;padding:9px 14px;box-shadow:inset 0 1px #75d6d51a,0 4px 12px #0002;min-width:0}
-.score-panel.mine{border-color:#47bccc}.score-panel.theirs{border-color:#a85a70}.score-panel b{color:#74dae7;font-size:10px;letter-spacing:1.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.score-panel.theirs b{color:#ff9dae}.score-value{display:flex;gap:7px;align-items:baseline;margin-top:2px}.score-value strong{font-size:25px;color:#fff;font-weight:800;line-height:1.1}.score-value small{font-size:9px;color:#93b9b5;letter-spacing:1px}.score-vs{align-self:center;font-size:11px;font-weight:800;color:#b5a87d;background:#1c3732;border:1px solid #59664a;border-radius:50%;width:29px;height:29px;display:grid;place-items:center}
-.scoreboard.four{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.scoreboard.four .score-panel{padding:8px}.scoreboard.four .score-value strong{font-size:20px}.scoreboard.four .score-value small{font-size:8px;letter-spacing:0}
-.arena{position:relative;min-width:0;min-height:0}
-body.match-mode .arena #board{position:absolute;left:0;right:0;top:24px;bottom:24px;width:100%;height:calc(100% - 48px);border:2px solid #4f9992;border-radius:25px;outline:1px solid #1b504f;background:radial-gradient(ellipse at 50% 55%,#119a94 0%,var(--cloth) 62%,#066b70 100%);box-shadow:inset 0 0 0 3px #123d3d66,inset 0 0 70px #013d4544,0 6px 18px #0003}
-body.match-mode .arena #board:before{inset:8px;border-color:#9ae6d826;border-radius:17px}.board-empty b{color:#9cdbcd;opacity:.7;font-size:23px}.board-empty span{color:#9ed1c6;font-size:9px;letter-spacing:1.7px}
-body.match-mode .arena #opponents{position:absolute;inset:0;display:block;overflow:visible;margin:0;padding:0;pointer-events:none;z-index:3;border:0;background:transparent}
-.arena .player-chip{position:absolute;top:0;right:12px;display:flex;min-width:112px;max-width:190px;min-height:45px;gap:7px;padding:5px 11px 5px 5px;border:1px solid #3b807d;border-radius:28px;background:#123d3eee;box-shadow:0 4px 12px #00282d66;overflow:visible}
-.arena .player-chip.mine{top:auto;right:auto;bottom:0;left:12px;border-color:#4cc5d0}.arena .player-chip.current{border-color:#e0cf83;box-shadow:0 0 0 2px #eed78722,0 4px 12px #00282d66;background:#1c4740}
-.arena .avatar{width:34px;height:34px;display:grid!important;background:linear-gradient(145deg,#33b8c6,#157082);border:2px solid #9cddd3;color:#fff;font-size:14px;box-shadow:0 0 0 2px #10373c}.arena .player-chip:not(.mine) .avatar{background:linear-gradient(145deg,#c47d8e,#854d66);border-color:#f1b4ad}
-.arena .player-copy b{max-width:115px;color:#e6f7f2;font-size:11px}.arena .player-copy small{color:#b4d2c9;font-size:10px}.arena .player-chip.offline{opacity:.65}
-.pass-badge{display:inline-block;position:absolute;left:calc(100% + 5px);top:50%;transform:translateY(-50%);border:1px solid #d8c475;background:#f6e5a9;color:#53431d;border-radius:8px;padding:5px 7px;font-size:10px;font-weight:900;letter-spacing:.9px;box-shadow:0 2px 6px #002c2c55;white-space:nowrap}
-.arena .player-chip:not(.mine) .pass-badge{left:auto;right:calc(100% + 5px)}
-.arena.four .player-chip:not(.mine){min-width:0;max-width:31%;padding:5px 7px 5px 4px}.arena.four .player-chip[data-seat=one]{left:5px;right:auto}.arena.four .player-chip[data-seat=two]{left:50%;right:auto;transform:translateX(-50%)}.arena.four .player-chip[data-seat=three]{right:5px}.arena.four .player-chip:not(.mine) .player-copy b{max-width:68px}.arena.four .player-chip:not(.mine) .avatar{width:27px;height:27px;font-size:11px}.arena.four .player-chip:not(.mine) .pass-badge{left:50%;right:auto;top:calc(100% + 1px);transform:translateX(-50%);font-size:8px;padding:3px 5px}
-.turn-strip p{color:#d0e9df;font-size:11px}.turn-strip small{background:#0c3838;color:#9fcdc2;border:1px solid #32655d;border-radius:9px;padding:5px 8px}
-.hand-dock{background:linear-gradient(180deg,#0c6668dd,#0b494f);border-color:#308b87;border-radius:18px;box-shadow:inset 0 1px #93e9d526,0 6px 25px #001b2266}
-.hand-label{color:#d2f0e7;letter-spacing:1.8px}.side-control select{background:#103e42;border-color:#3a7977;color:#c4ece3}.hand-controls button{background:#e1d7ae;color:#233c34}.hand .tile svg{width:47px;height:94px}.tile.playable{filter:drop-shadow(0 0 5px #97fff46b)}#hand .tile.playable:after{background:#b3ffe4}
-.sequence-sample{background:radial-gradient(#119a94,var(--cloth));border:2px solid #4f9992}
-.sound-setting{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:18px}.sound-setting button{font-size:13px}.sound-setting small{flex-basis:100%}
-@media(max-width:600px){.match-toolbar h2{font-size:15px}.match-eyebrow{letter-spacing:1px;font-size:8px}.match-tools button{padding:8px;font-size:11px}.match-tools{gap:4px}.scoreboard{gap:5px}.score-panel{padding:8px 10px;border-radius:11px}.score-value strong{font-size:23px}.score-value small{font-size:8px}.score-panel b{font-size:9px}.score-vs{width:24px;height:24px;font-size:9px}.arena .player-chip{min-width:105px;max-width:160px;min-height:40px;padding:4px 9px 4px 4px}.arena .avatar{width:30px;height:30px;font-size:12px}.arena .player-copy b{max-width:96px;font-size:10px}.arena .player-copy small{font-size:9px}.pass-badge{font-size:9px;padding:4px 6px}.hand .tile svg{width:42px;height:84px}.scoreboard.four .score-value{display:block}.scoreboard.four .score-value small{display:block}.scoreboard.four .score-panel{padding:6px}.scoreboard.four .score-panel b{font-size:8px;letter-spacing:.7px}.arena.four .player-chip:not(.mine) .player-copy b{max-width:55px}.arena.four .player-chip:not(.mine) .avatar{width:22px;height:22px;font-size:9px}.arena.four .player-chip:not(.mine){gap:4px}.arena.four .player-chip:not(.mine) .player-copy small{font-size:8px}}
-@media(orientation:landscape) and (max-height:540px){body.match-mode #partida.active{grid-template-columns:minmax(0,1fr) 170px;grid-template-rows:auto minmax(0,1fr) auto}.match-toolbar{grid-column:1;grid-row:1}.scoreboard,.scoreboard.four{grid-column:2;grid-row:1 / 3;display:flex;flex-direction:column;padding:0;gap:5px;overflow:auto}.score-panel{padding:6px 9px;flex:none}.score-panel b{font-size:8px}.score-value strong{font-size:19px}.score-value small{font-size:8px}.score-vs{display:none}.arena{grid-column:1;grid-row:2}.turn-strip{grid-column:1;grid-row:3;margin-bottom:102px}.hand-dock{right:188px}.arena .player-chip{min-width:86px;min-height:30px;padding:3px 7px 3px 3px}.arena .avatar{width:23px;height:23px;font-size:10px}.arena .player-copy b{font-size:9px;max-width:85px}.arena .player-copy small{font-size:8px}.arena #board{border-radius:18px}.hand .tile svg{width:29px;height:58px}.arena.four .player-chip:not(.mine) .avatar{display:none!important}.arena.four .player-chip:not(.mine){min-width:65px}.pass-badge{font-size:8px;padding:3px 5px}.arena.four .player-chip:not(.mine) .pass-badge{font-size:7px}.scoreboard.four .score-value{display:flex}}
-.preview-arena{height:310px;margin:12px 0 20px}.preview-arena #chainSample{position:absolute;top:24px;bottom:24px;width:100%;height:calc(100% - 48px);margin:0}.preview-seats{position:absolute;inset:0;pointer-events:none}.preview-arena .player-chip{max-width:160px}.preview-arena .pass-badge{font-size:9px}</style><header><b>▣ DOMINÓ <span class="gold">CLUBE</span></b><span class="badge">SÓ ENTRE AMIGOS</span></header><main><p id="network" class="status" role="status" aria-live="polite">Crie uma mesa ou entre pelo código de um amigo.</p><p id="error" class="error" role="alert"></p>
+/* 02. Pedras vetoriais. A geometria e os encaixes vêm do renderizador existente. */
+.tile { position: relative; display: inline-flex; flex: none; min-width: 0; margin: 5px; padding: 0; border: 0; border-radius: 7px; background: transparent; box-shadow: none; line-height: 0; vertical-align: middle; transition: transform 140ms ease, filter 140ms ease; }
+.tile svg { display: block; width: 92px; height: 46px; overflow: visible; }
+.tile:disabled { opacity: 1; filter: saturate(.7); }
+.tile:focus-visible { outline-color: #faf0cb; outline-offset: 5px; }
+.hand .tile svg { width: 47px; height: 94px; }
+.tile.playable { filter: drop-shadow(0 0 4px #b7f5db55); }
+#hand .tile.playable::after { position: absolute; bottom: -5px; left: 10px; right: 10px; height: 2px; border-radius: 4px; background: #c8eed8; content: ""; }
+#hand .tile:disabled::after { display: none; }
+@media (hover: hover) and (pointer: fine) { .tile:not(:disabled):hover { transform: translateY(-5px); } }
+
+/* 03. Partida imersiva. Safe areas protegem controles junto ao recorte do iPhone. */
+body.match-mode { overflow: hidden; background: #0b211e; }
+body.match-mode > header, body.match-mode > nav, body.match-mode > footer { display: none; }
+body.match-mode > main { width: 100%; max-width: none; height: 100vh; height: 100dvh; margin: 0; padding: 0; }
+body.match-mode #network, body.match-mode #error:empty { display: none; }
+body.match-mode #error:not(:empty) { position: fixed; z-index: 20; top: calc(env(safe-area-inset-top) + 65px); left: 16px; right: 16px; margin: 0; padding: 13px; background: #512f25; color: #ffe6cf; border: 1px solid #bc8865; border-radius: 12px; box-shadow: 0 5px 20px #0005; text-align: center; }
+body.match-mode #partida.active {
+  position: fixed; inset: 0; isolation: isolate;
+  display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+  gap: 8px; height: 100vh; height: 100dvh;
+  padding: calc(env(safe-area-inset-top) + 12px) max(14px, env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 12px) max(14px, env(safe-area-inset-left));
+  background: radial-gradient(ellipse at 50% 40%, #1b4038, #0c2522 75%);
+}
+.match-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 12px; padding: 0 3px; min-width: 0; }
+.match-toolbar > div:first-child { min-width: 0; }
+.match-eyebrow { display: block; margin-bottom: 2px; color: #91b1a2; font-size: 9px; font-weight: 600; letter-spacing: 2px; }
+.match-toolbar h2 { margin: 0; overflow: hidden; color: #eff8ee; font-size: 18px; white-space: nowrap; text-overflow: ellipsis; }
+.table-stake { display: flex; align-items: center; gap: 7px; padding: 7px 10px; border: 1px solid #5c674b; border-radius: 10px; background: #263b2d; color: #e0cf9b; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.table-stake::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #bece95; }
+.match-tools { display: flex; align-items: center; gap: 5px; }
+.match-tools button { min-width: 40px; min-height: 40px; margin: 0; padding: 9px; border: 1px solid #3d6051; border-radius: 11px; background: #17362e; color: #c9d9c9; font-size: 11px; }
+.match-tools .sound-button { min-width: 52px; }
+.sound-button[aria-pressed="false"] { color: #83988b; }
+
+/* 04. Placar: dados atuais da rodada, sem acrescentar regras de pontuação. */
+.scoreboard { display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch; gap: 8px; padding: 0 3px; min-width: 0; }
+.score-panel { min-width: 0; padding: 9px 14px; border: 1px solid #447665; border-radius: 13px; background: linear-gradient(140deg, #193c33, #122e28); box-shadow: inset 0 1px #c8e6cd10; }
+.score-panel.mine { border-color: #6caa9b; }
+.score-panel.theirs { border-color: #8b7a5f; }
+.score-panel b { display: block; overflow: hidden; color: #aad7c8; font-size: 10px; font-weight: 700; letter-spacing: 1.4px; white-space: nowrap; text-overflow: ellipsis; }
+.score-panel.theirs b { color: #e3c5a0; }
+.score-value { display: flex; align-items: baseline; gap: 7px; margin-top: 2px; }
+.score-value strong { color: #faf9ee; font-size: 27px; font-weight: 750; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.score-value small { color: #b1c6b5; font-size: 10px; letter-spacing: .8px; }
+.score-vs { align-self: center; display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid #617254; border-radius: 50%; background: #243c2d; color: #d7c691; font-size: 10px; font-weight: 700; }
+.scoreboard.four { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
+.scoreboard.four .score-panel { padding: 8px 10px; }
+.scoreboard.four .score-value strong { font-size: 23px; }
+.scoreboard.four .score-value small { font-size: 9px; letter-spacing: .1px; }
+
+/* 05. Arena e posições ao redor da mesa: você embaixo e amigos nas demais bordas. */
+.arena { position: relative; min-width: 0; min-height: 0; }
+body.match-mode .arena #board {
+  position: absolute; left: 10px; top: 27px;
+  width: calc(100% - 20px); height: calc(100% - 54px); min-height: 0;
+  margin: 0; padding: 0; display: block; overflow: hidden;
+  border: 3px solid #4c8170; border-radius: 28px; outline: 1px solid #13392f;
+  background: radial-gradient(ellipse at 45% 40%, #14938a, var(--cloth) 65%, #08696b);
+  box-shadow: inset 0 0 0 3px #0c443b66, inset 0 0 55px #013f3e33, 0 5px 16px #00160f55;
+}
+body.match-mode .arena.four #board { left: 36px; width: calc(100% - 72px); }
+#board::before { position: absolute; pointer-events: none; content: ""; inset: 8px; border: 1px solid #c2f0d826; border-radius: 18px; }
+#board > svg { position: relative; display: block; width: 100%; height: 100%; }
+.board-empty { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; }
+.board-empty b { color: #a7d3b7; opacity: .55; font-size: 23px; font-weight: 500; letter-spacing: 4px; }
+.board-empty span { padding: 0 12px; color: #bdd2bb; font-size: 9px; letter-spacing: 1.5px; }
+body.match-mode .arena #opponents, .preview-seats { position: absolute; z-index: 3; inset: 0; margin: 0; padding: 0; border: 0; display: block; overflow: visible; pointer-events: none; background: transparent; }
+.arena .player-chip { position: absolute; top: 0; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; width: max-content; min-width: 126px; max-width: 190px; min-height: 46px; padding: 5px 13px 5px 5px; border: 1px solid #527c62; border-radius: 28px; background: #173a30f5; box-shadow: 0 4px 10px #001d1b44; }
+.arena .player-chip.mine { top: auto; bottom: 0; }
+.arena .player-chip.current { border-color: #e0cc8b; background: #284534; box-shadow: 0 0 0 2px #d9d2a126, 0 4px 10px #001d1b44; }
+.arena .player-chip.current::before { position: absolute; content: ""; width: 7px; height: 7px; right: 9px; top: 8px; border-radius: 50%; background: #eee0a4; box-shadow: 0 0 0 3px #e7d8a211; }
+.arena .player-chip.offline { opacity: .6; }
+.arena .avatar { display: grid; place-items: center; flex: none; width: 36px; height: 36px; border: 2px solid #cae2bd; border-radius: 50%; background: linear-gradient(140deg, #537d62, #234d3f); color: #fff8e3; box-shadow: 0 0 0 2px #193d30; font-size: 14px; font-weight: 750; }
+.arena .player-chip:not(.mine) .avatar { border-color: #dccba3; background: linear-gradient(140deg, #88765c, #554d3c); }
+.player-copy { min-width: 0; }
+.player-copy b { display: block; max-width: 125px; overflow: hidden; color: #f4f6e8; font-size: 12px; font-weight: 650; white-space: nowrap; text-overflow: ellipsis; }
+.player-copy small { display: block; color: #bdcdb8; font-size: 11px; white-space: nowrap; }
+.pass-badge { position: absolute; left: calc(100% + 6px); top: 50%; transform: translateY(-50%); padding: 4px 7px; border: 1px solid #d5c18b; border-radius: 8px; background: #f2e2aa; color: #53491f; box-shadow: 0 3px 7px #002c2144; font-size: 10px; font-weight: 850; letter-spacing: .7px; white-space: nowrap; }
+.arena .player-chip:not(.mine) .pass-badge { left: auto; right: calc(100% + 6px); }
+.arena.four .player-chip[data-seat="one"], .arena.four .player-chip[data-seat="three"] {
+  top: 50%; left: 0; bottom: auto; transform: translateY(-50%);
+  flex-direction: column; gap: 4px; width: 76px; min-width: 0; max-width: 76px; padding: 6px 4px; border-radius: 16px; text-align: center;
+}
+.arena.four .player-chip[data-seat="three"] { left: auto; right: 0; }
+.arena.four .player-chip[data-seat="two"] { top: 0; left: 50%; bottom: auto; transform: translateX(-50%); }
+.arena.four .player-chip[data-seat="one"] .player-copy b, .arena.four .player-chip[data-seat="three"] .player-copy b { max-width: 66px; font-size: 11px; }
+.arena.four .player-chip[data-seat="one"] .player-copy small, .arena.four .player-chip[data-seat="three"] .player-copy small { font-size: 10px; }
+.arena.four .player-chip[data-seat="one"] .pass-badge, .arena.four .player-chip[data-seat="three"] .pass-badge { left: 50%; right: auto; top: calc(100% + 3px); transform: translateX(-50%); }
+
+/* 06. Mensagem de turno e mão. Rolagem horizontal evita comprimir pedras extras. */
+.turn-strip { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 26px; padding: 0 4px; }
+.turn-strip p { flex: 1; min-width: 0; margin: 0; color: #cde0c8; font-size: 12px; line-height: 1.4; }
+.turn-strip small { flex: none; padding: 5px 8px; border: 1px solid #3d6250; border-radius: 8px; background: #173d31; color: #bbcead; font-size: 11px; white-space: nowrap; }
+.hand-dock { min-width: 0; padding: 10px 12px 9px; border: 1px solid #486f58; border-radius: 18px; background: linear-gradient(180deg, #1a473a, #12362d); box-shadow: inset 0 1px #c5e5c014, 0 5px 15px #001b1666; }
+.hand-controls { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+.hand-label { color: #d2dfbc; font-size: 10px; font-weight: 700; letter-spacing: 1.7px; white-space: nowrap; }
+.side-control { display: flex; align-items: center; gap: 6px; }
+.side-control label { color: #becdb2; font-size: 11px; }
+.side-control select { width: auto; margin: 0; padding: 7px 9px; border: 1px solid #52765b; border-radius: 9px; background: #193e30; color: #e2e9cf; font-size: 12px; }
+.hand-controls button { min-height: 34px; margin: 0; padding: 8px 12px; font-size: 12px; }
+body.match-mode #hand { display: flex; align-items: flex-end; justify-content: center; gap: 8px; min-width: 0; min-height: 107px; overflow-x: auto; overflow-y: hidden; padding: 8px 4px 5px; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: #9eb386 #1b3d2d; }
+#hand .tile { flex: none; margin: 0 0 4px; }
+
+/* 07. Prévia do visual, fora de uma partida; usa os mesmos componentes da mesa. */
+.preview-arena { height: 320px; margin: 12px 0 20px; }
+.sequence-sample { height: 210px; border: 2px solid #4c8170; border-radius: 22px; background: radial-gradient(#14938a, var(--cloth)); overflow: hidden; }
+.sequence-sample svg { display: block; width: 100%; height: 100%; }
+.preview-arena #chainSample { position: absolute; left: 10px; top: 27px; width: calc(100% - 20px); height: calc(100% - 54px); margin: 0; }
+.preview-arena.four #chainSample { left: 36px; width: calc(100% - 72px); }
+.sound-setting { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.sound-setting button { font-size: 13px; }
+.sound-setting small { flex-basis: 100%; }
+
+/* 08. iPhone e outros celulares em retrato. Nenhuma dimensão depende de modelo. */
+@media (max-width: 600px) {
+  header, main, nav { padding: 15px; }
+  .card { padding: 18px; }
+  body.match-mode #partida.active { gap: 7px; padding-left: max(9px, env(safe-area-inset-left)); padding-right: max(9px, env(safe-area-inset-right)); }
+  .match-toolbar { gap: 7px; padding: 0; }
+  .match-eyebrow { font-size: 8px; letter-spacing: 1px; }
+  .match-toolbar h2 { font-size: 15px; }
+  .table-stake { padding: 6px 8px; gap: 5px; font-size: 10px; }
+  .match-tools { gap: 4px; }
+  .match-tools button { min-width: 36px; min-height: 40px; padding: 7px; font-size: 10px; }
+  .match-tools .sound-button { min-width: 46px; }
+  .scoreboard { gap: 5px; padding: 0; }
+  .score-panel { padding: 8px 10px; border-radius: 11px; }
+  .score-panel b { font-size: 10px; letter-spacing: 1px; }
+  .score-value strong { font-size: 24px; }
+  .score-value small { font-size: 9px; letter-spacing: .3px; }
+  .score-vs { width: 22px; height: 22px; font-size: 9px; }
+  .scoreboard.four .score-panel { padding: 6px; }
+  .scoreboard.four .score-panel b { font-size: 9px; letter-spacing: .3px; }
+  .scoreboard.four .score-value { display: block; }
+  .scoreboard.four .score-value strong { font-size: 21px; }
+  .scoreboard.four .score-value small { display: block; font-size: 9px; }
+  .arena .player-chip { min-width: 112px; max-width: 158px; min-height: 43px; padding: 4px 11px 4px 4px; gap: 6px; }
+  .arena .avatar { width: 33px; height: 33px; font-size: 12px; }
+  .player-copy b { max-width: 106px; font-size: 11px; }
+  .player-copy small { font-size: 10px; }
+  .arena.four .player-chip[data-seat="one"], .arena.four .player-chip[data-seat="three"] { width: 61px; min-width: 0; max-width: 61px; padding: 5px 3px; }
+  .arena.four .player-chip[data-seat="one"] .avatar, .arena.four .player-chip[data-seat="three"] .avatar { width: 29px; height: 29px; }
+  .arena.four .player-chip[data-seat="one"] .player-copy b, .arena.four .player-chip[data-seat="three"] .player-copy b { max-width: 54px; font-size: 10px; }
+  .arena.four .player-chip[data-seat="one"] .player-copy small, .arena.four .player-chip[data-seat="three"] .player-copy small { font-size: 9px; }
+  .pass-badge { font-size: 9px; padding: 4px 6px; }
+  .arena.four .pass-badge { font-size: 8px; }
+  body.match-mode .arena.four #board { left: 27px; width: calc(100% - 54px); }
+  .preview-arena.four #chainSample { left: 27px; width: calc(100% - 54px); }
+  .hand-dock { padding: 8px 8px 7px; }
+  .hand-label { font-size: 9px; letter-spacing: 1px; }
+  .side-control label { display: none; }
+  .side-control select { font-size: 12px; padding: 7px; }
+  .hand-controls button { padding: 8px 10px; font-size: 11px; }
+  body.match-mode #hand { justify-content: flex-start; min-height: 95px; gap: 7px; padding-top: 7px; }
+  .hand .tile svg { width: 42px; height: 84px; }
+  .turn-strip { gap: 7px; }
+  .turn-strip p { font-size: 11px; }
+  .turn-strip small { font-size: 10px; padding: 4px 6px; }
+}
+@media (max-width: 360px) {
+  .match-eyebrow { display: none; }
+  .match-toolbar h2 { font-size: 14px; }
+  .match-tools button { min-width: 32px; padding: 6px; }
+  .match-tools .sound-button { min-width: 43px; }
+  .table-stake { font-size: 9px; padding: 6px; }
+  .table-stake::before { display: none; }
+  .hand-controls { gap: 5px; }
+  .hand-label { letter-spacing: .4px; }
+}
+
+/* 09. Paisagem: placar na lateral, mesa e mão com áreas próprias, sem sobreposição. */
+@media (orientation: landscape) and (max-height: 560px) {
+  body.match-mode #partida.active {
+    grid-template-columns: minmax(0, 1fr) clamp(130px, 19vw, 190px);
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    gap: 6px 12px;
+    padding-top: max(6px, env(safe-area-inset-top));
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
+  }
+  .match-toolbar { grid-column: 1 / -1; grid-row: 1; }
+  .match-eyebrow { display: none; }
+  .match-toolbar h2 { font-size: 14px; }
+  .match-tools button { min-height: 33px; }
+  .scoreboard, .scoreboard.four { grid-column: 2; grid-row: 2 / 5; display: flex; flex-direction: column; gap: 6px; padding: 0; overflow-y: auto; }
+  .score-panel { flex: none; padding: 7px 10px; }
+  .score-value strong { font-size: 22px; }
+  .score-panel b { font-size: 10px; }
+  .score-value small { font-size: 9px; }
+  .score-vs { display: none; }
+  .arena { grid-column: 1; grid-row: 2; }
+  .turn-strip { grid-column: 1; grid-row: 3; min-height: 19px; }
+  .turn-strip p { font-size: 10px; }
+  .turn-strip small { padding: 2px 6px; font-size: 9px; }
+  .hand-dock { grid-column: 1; grid-row: 4; padding: 5px 9px 4px; border-radius: 13px; }
+  .hand-controls { margin-bottom: 1px; }
+  .hand-controls button { min-height: 27px; padding: 5px 8px; font-size: 10px; }
+  .side-control select { padding: 4px 7px; font-size: 10px; }
+  .side-control label { display: none; }
+  .hand-label { font-size: 9px; }
+  body.match-mode #hand { justify-content: center; min-height: 65px; padding: 3px 3px 4px; gap: 8px; }
+  .hand .tile svg { width: 29px; height: 58px; }
+  body.match-mode .arena #board { top: 20px; height: calc(100% - 40px); border-width: 2px; border-radius: 20px; }
+  .arena .player-chip { min-width: 96px; max-width: 150px; min-height: 36px; padding: 3px 9px 3px 3px; gap: 5px; }
+  .arena .avatar { width: 28px; height: 28px; font-size: 11px; }
+  .player-copy b { max-width: 108px; font-size: 10px; }
+  .player-copy small { font-size: 9px; }
+  .arena.four .player-chip[data-seat="one"], .arena.four .player-chip[data-seat="three"] { width: 65px; max-width: 65px; min-width: 0; padding: 4px 3px; gap: 2px; }
+  .arena.four .player-chip[data-seat="one"] .avatar, .arena.four .player-chip[data-seat="three"] .avatar { width: 24px; height: 24px; }
+  .arena.four .player-chip[data-seat="one"] .player-copy b, .arena.four .player-chip[data-seat="three"] .player-copy b { max-width: 58px; font-size: 10px; }
+  .arena.four .player-chip[data-seat="one"] .player-copy small, .arena.four .player-chip[data-seat="three"] .player-copy small { font-size: 9px; }
+  .pass-badge { font-size: 8px; padding: 3px 5px; }
+}
+
+/* 10. Preferência de acessibilidade: remove efeitos não essenciais. */
+@media (prefers-reduced-motion: reduce) { .tile { transition: none; } }
+</style><header><b>▣ DOMINÓ <span class="gold">CLUBE</span></b><span class="badge">SÓ ENTRE AMIGOS</span></header><main><p id="network" class="status" role="status" aria-live="polite">Crie uma mesa ou entre pelo código de um amigo.</p><p id="error" class="error" role="alert"></p>
 <section id="inicio" class="active"><span class="gold">SUA TURMA. SUA MESA.</span><h1>Amigos de verdade.<br>A mesma mesa.</h1><p class="muted">Jogue online com 2 ou 4 pessoas. Compartilhe o convite e espere seus amigos entrarem.</p><button onclick="go('criar')">＋ Criar mesa</button><button class="secondary" onclick="go('entrar')">Entrar na mesa</button><div class="grid"><div class="card"><h3>Clássico</h3><p>Encaixe as pedras e esvazie sua mão.</p></div><div class="card"><h3>Ponta de 5</h3><p>Pontue com a soma das pontas em múltiplos de cinco.</p></div><div class="card"><h3>Fechado</h3><p>Sem compra: jogue ou passe a vez.</p></div></div><div class="notice">Mantenham o jogo aberto durante a partida. A mesa depende da conexão do dono. Nesta versão, as partidas são gratuitas.</div><div class="card"><h3>Seu histórico neste aparelho</h3><div id="history"></div></div></section>
 <section id="criar"><h2>Monte sua mesa</h2><div class="card"><label>Seu nome<input id="nome" maxlength="32" autocomplete="nickname" placeholder="Como seus amigos te chamam?"></label><div class="grid"><label>Modalidade<select id="modo"><option>Clássico</option><option>Ponta de 5</option><option>Fechado</option></select></label><label>Participantes<select id="qtd"><option value="2">2 jogadores</option><option value="4">4 jogadores • individual</option></select></label></div><p>Sem aposta • entrada gratuita</p><button onclick="createRoom()" id="createBtn">Criar mesa online</button></div></section>
 <section id="entrar"><h2>Entre na mesa do seu amigo</h2><div class="card"><label>Seu nome<input id="guestName" maxlength="32" autocomplete="nickname" placeholder="Seu nome"></label><label>Código da mesa<input id="code" maxlength="12" autocapitalize="none" spellcheck="false" placeholder="Cole o código recebido"></label><button onclick="joinRoom()" id="joinBtn">Entrar e ver as regras</button></div></section>
 <section id="convite"><h2>Sala de espera</h2><div class="card"><div id="roomSummary"></div><div id="seats"></div><div id="inviteControls" hidden><label>Link da mesa<input id="inviteLink" readonly onclick="this.select()"></label><button onclick="share()">Convidar amigo pelo WhatsApp</button><button class="secondary" onclick="copyInvite()">Copiar link</button><small>Abra o WhatsApp para escolher o amigo e enviar o convite.</small></div></div><div class="card"><h3>Regras desta mesa</h3><p id="rules"></p><button id="readyBtn" onclick="sendAction({type:'ready'})">Aceitar regras e ficar pronto</button><button id="startBtn" onclick="sendAction({type:'start'})" hidden>Iniciar partida</button><p id="lobbyStatus"></p></div></section>
-<section id="partida" aria-label="Mesa de dominó"><div class="match-toolbar"><div><span class="match-eyebrow">DOMINÓ CLUBE · ENTRE AMIGOS</span><h2 id="gameTitle">Partida</h2></div><div class="match-tools"><button onclick="fullscreenMatch()" aria-label="Ativar tela cheia">⛶</button><button class="sound-button" id="soundToggle" onclick="toggleSound()" aria-label="Ativar ou desativar som" aria-pressed="true">Som</button><button onclick="leaveGame()">Sair</button></div></div><div class="scoreboard" id="scoreboard" aria-label="Placar da rodada"></div><div class="arena" id="arena"><div id="board" class="table" aria-label="Pedras na mesa"></div><div id="opponents" class="card" aria-label="Jogadores e peças restantes"></div></div><div class="turn-strip"><p id="gameStatus" class="status" role="status" aria-live="polite"></p><small id="stock"></small></div><div class="hand-dock"><div class="hand-controls"><span class="hand-label">SUAS PEDRAS</span><div class="side-control"><label for="lado">Encaixar na</label><select id="lado" aria-label="Encaixar na" onchange="renderHand()"><option value="L">← Esquerda</option><option value="R">Direita →</option></select></div><button id="draw" onclick="sendAction({type:'draw'})">Comprar / passar</button></div><div id="hand" class="hand" aria-label="Sua mão de dominó"></div></div></section>
+<section id="partida" aria-label="Mesa de dominó"><div class="match-toolbar"><div><span class="match-eyebrow">DOMINÓ CLUBE · ENTRE AMIGOS</span><h2 id="gameTitle">Partida</h2></div><span class="table-stake" aria-label="Aposta desta mesa: sem aposta">Sem aposta</span><div class="match-tools"><button onclick="fullscreenMatch()" aria-label="Ativar tela cheia">⛶</button><button class="sound-button" id="soundToggle" onclick="toggleSound()" aria-label="Ativar ou desativar som" aria-pressed="true">Som</button><button onclick="leaveGame()">Sair</button></div></div><div class="scoreboard" id="scoreboard" aria-label="Placar da rodada"></div><div class="arena" id="arena"><div id="board" class="table" aria-label="Pedras na mesa"></div><div id="opponents" class="card" aria-label="Jogadores e peças restantes"></div></div><div class="turn-strip"><p id="gameStatus" class="status" role="status" aria-live="polite"></p><small id="stock"></small></div><div class="hand-dock"><div class="hand-controls"><span class="hand-label">SUAS PEDRAS</span><div class="side-control"><label for="lado">Encaixar na</label><select id="lado" aria-label="Encaixar na" onchange="renderHand()"><option value="L">← Esquerda</option><option value="R">Direita →</option></select></div><button id="draw" onclick="sendAction({type:'draw'})">Comprar / passar</button></div><div id="hand" class="hand" aria-label="Sua mão de dominó"></div></div></section>
 <section id="resultado"><h2>Resultado da rodada</h2><div class="card" id="result"></div><button onclick="sendAction({type:'rematch'})" id="rematchBtn" hidden>Preparar outra rodada</button><button class="secondary" onclick="go('inicio')">Início</button></section>
-<section id="ajustes"><h2>Seu estilo de jogo</h2><div class="card"><h3>Aparência das pedras</h3><div id="stoneSamples" aria-label="Amostra das pedras"></div><h3 style="margin-top:22px">Prévia visual da mesa</h3><small>Dados ilustrativos para conferir o visual e o aviso de passe.</small><div class="scoreboard" id="previewScoreboard"></div><div class="arena preview-arena" id="previewArena"><div class="sequence-sample" id="chainSample" aria-label="Prévia visual da sequência de dominó"></div><div class="preview-seats" id="previewPlayers"></div></div><p class="muted">Pedras brancas com relevo, mesa verde-petróleo e placar de alto contraste.</p><label>Pedras<select onchange="document.documentElement.style.setProperty('--stone',this.value)"><option value="#f4f5f3">Branca</option><option value="#bfe1ed">Azul gelo</option><option value="#dfd0a6">Areia</option></select></label><label>Mesa<select onchange="document.getElementById('board').style.background=this.value"><option value="#087e80">Verde-petróleo</option><option value="#203c55">Azul noite</option><option value="#493349">Bordô</option></select></label><div class="sound-setting"><button class="secondary" onclick="testStoneSound()">Testar som da pedra</button><button class="secondary" onclick="toggleSound()" id="soundSettingToggle">Som ligado</button><small id="soundSettingStatus" role="status">Som seco de pedra batendo na mesa. Pode ser desligado durante a partida.</small></div></div></section>
+<section id="ajustes"><h2>Seu estilo de jogo</h2><div class="card"><h3>Aparência das pedras</h3><div id="stoneSamples" aria-label="Amostra das pedras"></div><h3 style="margin-top:22px">Prévia visual da mesa</h3><small>Dados ilustrativos para conferir o visual e o aviso de passe.</small><p class="table-stake" style="width:max-content">Sem aposta</p><div class="scoreboard" id="previewScoreboard"></div><div class="arena preview-arena" id="previewArena"><div class="sequence-sample" id="chainSample" aria-label="Prévia visual da sequência de dominó"></div><div class="preview-seats" id="previewPlayers"></div></div><p class="muted">Pedras brancas com relevo, mesa verde-petróleo e placar de alto contraste.</p><label>Pedras<select onchange="document.documentElement.style.setProperty('--stone',this.value)"><option value="#f4f5f3">Branca</option><option value="#bfe1ed">Azul gelo</option><option value="#dfd0a6">Areia</option></select></label><label>Mesa<select onchange="document.getElementById('board').style.background=this.value"><option value="#087e80">Verde-petróleo</option><option value="#203c55">Azul noite</option><option value="#493349">Bordô</option></select></label><div class="sound-setting"><button class="secondary" onclick="testStoneSound()">Testar som da pedra</button><button class="secondary" onclick="toggleSound()" id="soundSettingToggle">Som ligado</button><small id="soundSettingStatus" role="status">Som seco de pedra batendo na mesa. Pode ser desligado durante a partida.</small></div></div></section>
 <section id="carteira"><h2>Partidas gratuitas</h2><div class="card"><p>Apostas, Pix, saldo e saques não estão ativos nesta versão.</p></div></section>
 </main><nav><button onclick="go('inicio')">Início</button><button onclick="go('criar')">Criar mesa</button><button onclick="go('entrar')">Entrar</button><button onclick="openCurrent()">Minha mesa</button><button onclick="go('ajustes')">Ajustes</button></nav><footer>Entre amigos • gratuito • mantenha esta página aberta durante a partida.</footer>
 <!-- PeerJS distribuído sob licença MIT; biblioteca incorporada para evitar dependência de CDN no carregamento. -->
@@ -162,6 +351,7 @@ syncSoundButtons();
 $('stoneSamples').innerHTML=[[6,6],[5,3],[2,4],[0,1]].map(t=>tile(t)).join('');
 $('guestName').value=read('domino.friends.name','');$('nome').value=read('domino.friends.name','');const codeFromLink=location.hash.startsWith('#mesa=')?location.hash.slice(6):'';if(validCode(codeFromLink)){$('code').value=codeFromLink;go('entrar')}else go('inicio');
 </script></html>
+
 
 
 
