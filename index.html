@@ -503,7 +503,7 @@ body.match-mode .turn-clock.clock-urgent { border:2px solid #ff7b72 !important;a
 .fx-dialog h3 { margin:18px 0 8px; }
 .fx-dialog p,.fx-dialog small { line-height:1.5; }
 .fx-dialog .fx-close { float:right;min-width:34px;min-height:34px;padding:6px;margin:0 0 8px 8px;background:#234d40;color:#eff3df; }
-.fx-controls { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px; }
+.fx-controls { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px; }
 .fx-controls button { padding:12px 6px;margin:0;font-size:12px;min-height:48px; }
 .fx-controls button[aria-pressed="false"] { background:#264b3f;color:#d8e7dc; }
 .fx-reactions { display:flex;flex-wrap:wrap;gap:5px; }
@@ -552,14 +552,14 @@ body.match-mode .turn-clock.clock-urgent { border:2px solid #ff7b72 !important;a
 <section id="convite" aria-label="Entrada na mesa"><h2>Entre na mesa</h2><div class="card lobby-overview"><div id="roomSummary"></div><div id="seats" aria-label="Quem está na mesa"></div></div><div class="card lobby-actions"><p id="lobbyBrief" class="lobby-brief"></p><button id="readyBtn" onclick="requestReady()">Entrar e ficar pronto</button><button id="startBtn" onclick="sendAction({type:'start'})" hidden>Iniciar partida</button><p id="lobbyStatus" role="status" aria-live="polite"></p><p id="lobbyFeedback" role="alert"></p><button id="lobbyReload" class="secondary" onclick="reloadLobby()" hidden>Atualizar e voltar à mesa</button><details class="lobby-rules"><summary>Ver regras completas</summary><p id="rules"></p></details></div><div class="card" id="inviteControls" hidden><label>Link da mesa<input id="inviteLink" readonly onclick="this.select()"></label><button onclick="share()">Convidar amigo pelo WhatsApp</button><button class="secondary" onclick="copyInvite()">Copiar link</button></div></section>
 <section id="partida" class="immersive-table" aria-label="Mesa de dominó"><div class="match-toolbar"><div><span class="match-eyebrow">DOMINÓ CLUBE · ENTRE AMIGOS</span><h2 id="gameTitle">Partida</h2></div><span class="table-stake" aria-label="Aposta desta mesa: sem aposta">Sem aposta</span><div class="match-tools"><button onclick="fullscreenMatch()" aria-label="Ativar tela cheia">⛶</button><button class="sound-button" id="soundToggle" onclick="toggleSound()" aria-label="Ativar ou desativar som" aria-pressed="true">Som</button><button class="fx-open" onclick="Fx.openPanel()" aria-label="Efeitos e reações">✦</button><button onclick="leaveGame()">Sair</button></div></div><div class="scoreboard" id="scoreboard" aria-label="Placar da rodada"></div><div class="arena" id="arena"><div id="board" class="table game-board" aria-label="Pedras na mesa"></div><div class="stock-pile" id="stockPile" aria-label="Pedras disponíveis para compra"><i aria-hidden="true"></i><span>ESTOQUE <strong>14</strong></span></div><div id="opponents" class="card" aria-label="Jogadores e peças restantes"></div></div><div class="turn-strip"><p id="gameStatus" class="status" role="status" aria-live="polite"></p><span id="turnTimer" class="turn-clock" role="timer" aria-live="off">25s</span><small id="stock"></small></div><div class="hand-dock"><div class="hand-controls"><span class="hand-label">SUAS PEDRAS</span><span class="drag-hint">Arraste até a ponta</span><button id="draw" class="buy-button" onclick="sendAction({type:'draw'})">Comprar / passar</button></div><div id="hand" class="hand game-rack" aria-label="Sua mão de dominó"></div></div></section>
 <section id="resultado"><h2 id="resultTitle">Resultado da rodada</h2><div id="fxReveal" class="fx-reveal" role="status" aria-live="polite" hidden></div><div class="card" id="result"></div><button onclick="sendAction({type:'rematch'})" id="rematchBtn" hidden>Jogar novamente</button><p id="rematchStatus" class="muted" role="status"></p><div id="fxResultActions" hidden><button id="fxRematch" onclick="Fx.rematch()">Revanche</button><button class="secondary" onclick="Fx.shareResult()">Compartilhar resultado no WhatsApp</button><button class="secondary" onclick="Fx.openPanel()">Reações</button><p id="fxSocialStatus" class="fx-social-note" role="status"></p><details class="card fx-progress"><summary>Troféus e ranking entre amigos</summary><div id="fxProgressResult"></div></details></div><button class="secondary" onclick="go('inicio')">Início</button></section>
-<section id="ajustes"><h2>Seu estilo de jogo</h2><div class="card"><h3>Som, vibração e emoção</h3><button onclick="Fx.openPanel()">Efeitos e reações</button><button class="secondary" id="fxVibrationSetting" onclick="Fx.toggleVibration()" aria-pressed="true">Vibração ligada</button><button class="secondary" id="fxMusicSetting" onclick="Fx.toggleMusic()" aria-pressed="true">Música ligada</button><p class="muted">Reações prontas, música suave e demonstrações de vitória, carroça e jogo trancado.</p></div><div class="card"><h3>Aparência das pedras</h3><div id="stoneSamples" aria-label="Amostra das pedras"></div><h3 style="margin-top:22px">Prévia visual da mesa</h3><label>Jogadores na prévia<select id="previewCount" onchange="renderSequenceSample()"><option value="2">2 jogadores</option><option value="3">3 jogadores</option><option value="4">4 jogadores</option></select></label><button onclick="openTablePreview()">Ver tabuleiro em tela inteira</button><small>Dados ilustrativos para conferir o visual e o aviso de passe.</small><p class="table-stake" style="width:max-content">Sem aposta</p><div class="scoreboard" id="previewScoreboard"></div><div class="arena preview-arena" id="previewArena"><div class="sequence-sample" id="chainSample" aria-label="Prévia visual da sequência de dominó"></div><div class="preview-seats" id="previewPlayers"></div></div><p class="muted">Pedras brancas na mão e na mesa, com relevo acetinado e encaixe animado.</p><label>Pedras<select onchange="document.documentElement.style.setProperty('--stone',this.value)"><option value="#f5f3eb">Branco clássico</option><option value="#bfe1ed">Azul gelo</option><option value="#dfd0a6">Areia</option></select></label><label>Mesa<select onchange="document.getElementById('board').style.background=this.value"><option value="#087e80">Verde-petróleo</option><option value="#203c55">Azul noite</option><option value="#493349">Bordô</option></select></label><div class="sound-setting"><button class="secondary" onclick="testStoneSound()">Testar som da pedra</button><button class="secondary" onclick="toggleSound()" id="soundSettingToggle">Som ligado</button><small id="soundSettingStatus" role="status">Som seco de pedra batendo na mesa. Pode ser desligado durante a partida.</small></div></div></section>
+<section id="ajustes"><h2>Seu estilo de jogo</h2><div class="card"><h3>Som, vibração e emoção</h3><button onclick="Fx.openPanel()">Efeitos e reações</button><button class="secondary" id="fxVibrationSetting" onclick="Fx.toggleVibration()" aria-pressed="true">Vibração ligada</button><p class="muted">Reações prontas, som de celebração na batida e demonstrações de vitória, carroça e jogo trancado.</p></div><div class="card"><h3>Aparência das pedras</h3><div id="stoneSamples" aria-label="Amostra das pedras"></div><h3 style="margin-top:22px">Prévia visual da mesa</h3><label>Jogadores na prévia<select id="previewCount" onchange="renderSequenceSample()"><option value="2">2 jogadores</option><option value="3">3 jogadores</option><option value="4">4 jogadores</option></select></label><button onclick="openTablePreview()">Ver tabuleiro em tela inteira</button><small>Dados ilustrativos para conferir o visual e o aviso de passe.</small><p class="table-stake" style="width:max-content">Sem aposta</p><div class="scoreboard" id="previewScoreboard"></div><div class="arena preview-arena" id="previewArena"><div class="sequence-sample" id="chainSample" aria-label="Prévia visual da sequência de dominó"></div><div class="preview-seats" id="previewPlayers"></div></div><p class="muted">Pedras brancas na mão e na mesa, com relevo acetinado e encaixe animado.</p><label>Pedras<select onchange="document.documentElement.style.setProperty('--stone',this.value)"><option value="#f5f3eb">Branco clássico</option><option value="#bfe1ed">Azul gelo</option><option value="#dfd0a6">Areia</option></select></label><label>Mesa<select onchange="document.getElementById('board').style.background=this.value"><option value="#087e80">Verde-petróleo</option><option value="#203c55">Azul noite</option><option value="#493349">Bordô</option></select></label><div class="sound-setting"><button class="secondary" onclick="testStoneSound()">Testar som da pedra</button><button class="secondary" onclick="toggleSound()" id="soundSettingToggle">Som ligado</button><small id="soundSettingStatus" role="status">Som seco de pedra batendo na mesa. Pode ser desligado durante a partida.</small></div></div></section>
 <section id="tablePreview" class="immersive-table" aria-label="Prévia ilustrativa do tabuleiro ampliado"><div class="match-toolbar"><div><h2>Prévia · sem aposta</h2></div><div class="match-tools"><button onclick="renderLargePreview()" aria-label="Rever animação de encaixe">Rever efeito</button><button onclick="Fx.openPanel()">Efeitos</button><button onclick="go('ajustes')" aria-label="Fechar prévia">Voltar</button></div></div><div id="largePreviewScore" class="scoreboard"></div><div class="arena"><div id="largePreviewBoard" class="game-board"></div><div class="stock-pile" aria-label="Prévia do estoque"><i aria-hidden="true"></i><span>ESTOQUE <strong>14</strong></span></div><div id="largePreviewPlayers" class="preview-seats"></div></div><div class="turn-strip"><p>Prévia ilustrativa · arraste suas pedras durante a partida.</p><span class="turn-clock" aria-label="Exemplo de tempo por jogada: 25 segundos">25s</span><small>Estoque 14 · Mão 6</small></div><div class="hand-dock"><div class="hand-controls"><span class="hand-label">SUAS PEDRAS</span><button class="preview-points" onclick="showPointsToast(10,'Você')">+10 pontos</button><button class="preview-points" onclick="showPassToast('Amigo 1')">Ver passe</button><button class="preview-points" onclick="animateDraw(1,true)">Ver compra</button><button class="buy-button" disabled aria-label="Prévia do botão Comprar pedra">Comprar pedra</button></div><div id="largePreviewHand" class="hand game-rack"></div></div></section>
 <section id="carteira"><h2>Partidas gratuitas</h2><div class="card"><p>Apostas, Pix, saldo e saques não estão ativos nesta versão.</p></div></section>
 </main><nav><button onclick="go('inicio')">Início</button><button onclick="go('criar')">Criar mesa</button><button onclick="go('entrar')">Entrar</button><button onclick="openCurrent()">Minha mesa</button><button onclick="go('ajustes')">Ajustes</button></nav><footer>Entre amigos • gratuito • mantenha esta página aberta durante a partida.</footer>
 <div id="reconnectNotice" class="reconnect-notice" role="status" hidden><b>Aguardando jogador</b><strong>2:00</strong><span>A partida fica pausada. Sem retorno, será encerrada.</span></div>
 <div id="scoreToast" class="score-toast" role="status" aria-live="polite" hidden><strong></strong><span></span></div>
 
-<dialog id="fxPanel" class="fx-dialog" aria-labelledby="fxPanelTitle"><button class="fx-close" onclick="Fx.closePanel()" aria-label="Fechar efeitos e reações">×</button><h2 id="fxPanelTitle">O clima da mesa</h2><p class="muted">Seus controles, sem mudar as regras da partida.</p><div class="fx-controls"><button id="fxSound" onclick="toggleSound()" aria-pressed="true">Som ligado</button><button id="fxVibration" onclick="Fx.toggleVibration()" aria-pressed="true">Vibração ligada</button><button id="fxMusic" onclick="Fx.toggleMusic()" aria-pressed="true">Música ligada</button></div><small id="fxDeviceNote"></small><h3>Reaja com seus amigos</h3><div id="fxReactionChoices" class="fx-reactions"></div><p id="fxPanelStatus" class="fx-social-note" role="status"></p><details><summary>Experimentar os efeitos</summary><p>Demonstrações visuais. Não contam vitórias, pontos ou dinheiro.</p><div class="fx-reactions"><button onclick="Fx.preview('victory')">🏆 Vitória</button><button onclick="Fx.preview('carroca')">🁣 Carroça</button><button onclick="Fx.preview('closed')">Jogo trancado</button><button onclick="Fx.preview('music')">♫ Música</button></div></details></dialog>
+<dialog id="fxPanel" class="fx-dialog" aria-labelledby="fxPanelTitle"><button class="fx-close" onclick="Fx.closePanel()" aria-label="Fechar efeitos e reações">×</button><h2 id="fxPanelTitle">O clima da mesa</h2><p class="muted">Seus controles, sem mudar as regras da partida.</p><div class="fx-controls"><button id="fxSound" onclick="toggleSound()" aria-pressed="true">Som ligado</button><button id="fxVibration" onclick="Fx.toggleVibration()" aria-pressed="true">Vibração ligada</button></div><small id="fxDeviceNote"></small><h3>Reaja com seus amigos</h3><div id="fxReactionChoices" class="fx-reactions"></div><p id="fxPanelStatus" class="fx-social-note" role="status"></p><details><summary>Experimentar os efeitos</summary><p>Demonstrações visuais. Não contam vitórias, pontos ou dinheiro.</p><div class="fx-reactions"><button onclick="Fx.preview('victory')">🏆 Vitória</button><button onclick="Fx.preview('carroca')">🁣 Carroça</button><button onclick="Fx.preview('closed')">Jogo trancado</button><button onclick="Fx.preview('batidaSound')">🎉 Som de batida</button></div></details></dialog>
 <dialog id="fxDemo" class="fx-dialog" aria-label="Demonstração visual dos efeitos"></dialog>
 
 <!-- PeerJS distribuído sob licença MIT; biblioteca incorporada para evitar dependência de CDN no carregamento. -->
@@ -574,7 +574,7 @@ body.match-mode .turn-clock.clock-urgent { border:2px solid #ff7b72 !important;a
 //# sourceMappingURL=peerjs.min.js.map
 </script><script>
 'use strict';
-const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261018-clear-history';
+const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261018-clear-ends';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uuid=()=>crypto.randomUUID().replaceAll('-','');
 const RECONNECT_MS=120000;
@@ -815,25 +815,42 @@ function cancelStoneDrag(){
  d.source?.classList.remove('drag-source');d.ghost?.remove();d.targets.forEach(t=>t.el.remove());
  if($('hand').hasPointerCapture?.(d.pointerId))$('hand').releasePointerCapture(d.pointerId);
 }
+// Mantém o círculo (+) fora das faces das pedras, mesmo após curvas e zoom.
+function clearDropPosition(x,y,bounds,boxes,used=[],direction={x:1,y:0}){
+ const clearance=44,pad=39;
+ const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+ const safe=(px,py)=>boxes.every(q=>{const dx=Math.max(q.left-px,0,px-q.right),dy=Math.max(q.top-py,0,py-q.bottom);return dx*dx+dy*dy>=clearance*clearance;})&&used.every(p=>Math.hypot(px-p.x,py-p.y)>=82);
+ function search(b){
+  if(b.right-b.left<pad*2||b.bottom-b.top<pad*2)return null;
+  const point=(px,py)=>({x:clamp(px,b.left+pad,b.right-pad),y:clamp(py,b.top+pad,b.bottom-pad)});
+  const angle=Math.atan2(direction.y,direction.x),angles=[0,.4,-.4,.8,-.8,1.2,-1.2,1.6,-1.6,2,-2,2.5,-2.5,Math.PI];
+  for(let distance=0;distance<=192;distance+=16)for(const offset of angles){const p=point(x+Math.cos(angle+offset)*distance,y+Math.sin(angle+offset)*distance);if(safe(p.x,p.y))return p;}
+  let best=null,score=Infinity;
+  for(let px=b.left+pad;px<=b.right-pad;px+=20)for(let py=b.top+pad;py<=b.bottom-pad;py+=20){const d=(px-x)**2+(py-y)**2;if(d<score&&safe(px,py)){best={x:px,y:py};score=d;}}
+  return best;
+ }
+ return search(bounds)||search({left:0,top:0,right:innerWidth,bottom:innerHeight});
+}
 function stoneDropTargets(index){
  const g=V?.game;if(!g||g.over||g.paused||g.turn!==V.self||!g.hand[index])return [];
  const allowed=sides(g,g.hand[index]),board=$('board'),r=board.getBoundingClientRect();
  const stones=[...board.querySelectorAll('.board-stone')];
- const scene=g.chain.length?chainScene(g.chain,board.clientWidth,board.clientHeight):null;
+ const scene=g.chain.length?(g.spinner?spinnerScene(g,board.clientWidth,board.clientHeight):chainScene(g.chain,board.clientWidth,board.clientHeight)):null;
+ const boxes=stones.map(el=>el.getBoundingClientRect()),used=[];
  return (g.chain.length?allowed:['R']).map(side=>{
- let x=r.left+r.width/2,y=r.top+r.height/2;
+ let x=r.left+r.width/2,y=r.top+r.height/2,direction=({L:{x:-1,y:0},R:{x:1,y:0},U:{x:0,y:-1},D:{x:0,y:1}})[side];
  const marker=g.spinner?board.querySelector(`[data-end="${side}"]`):null;
- if(marker){const q=marker.getBoundingClientRect();x=q.left+q.width/2;y=q.top+q.height/2;}
+ if(marker){const q=marker.getBoundingClientRect();x=q.left+q.width/2;y=q.top+q.height/2;const index=scene.nodes.map((n,i)=>n.side===side?i:-1).filter(i=>i>=0).at(-1)??0,tip=boxes[index];if(tip){const dx=x-(tip.left+tip.right)/2,dy=y-(tip.top+tip.bottom)/2;if(Math.hypot(dx,dy)>1)direction={x:dx,y:dy};}}
  else if(stones.length){const left=side==='L' ,node=left?scene.nodes[0]:scene.nodes.at(-1),q=(left?stones[0]:stones.at(-1)).getBoundingClientRect();
  x=q.left+q.width/2;y=q.top+q.height/2;
- if(node.bridge&&!left)y=q.bottom+15;else x+=(left?-1:node.dir)*(q.width/2+15);
+ if(node.bridge&&!left){y=q.bottom+44;direction={x:0,y:1};}else{direction={x:left?-1:node.dir,y:0};x+=direction.x*(q.width/2+44);}
  }
- x=Math.max(r.left+30,Math.min(r.right-30,x));y=Math.max(r.top+30,Math.min(r.bottom-30,y));
+ const position=clearDropPosition(x,y,r,boxes,used,direction);if(!position)return null;({x,y}=position);used.push(position);
  const el=document.createElement('button');el.className='stone-drop-target';el.type='button';
  el.style.left=x+'px';el.style.top=y+'px';el.textContent='+';
  el.setAttribute('aria-label',g.chain.length?'Encaixar na ponta '+openEnds(g).find(e=>e.side===side)?.value+' ('+({L:'esquerda',R:'direita',U:'cima',D:'baixo'}[side])+')':'Colocar a primeira pedra');
- el.addEventListener('click',()=>commitStoneDrop(side));document.body.appendChild(el);return {side,x,y,el};
- });
+ el.addEventListener('click',()=>commitStoneDrop(side));effectRoot().appendChild(el);return {side,x,y,el};
+ }).filter(Boolean);
 }
 function beginStoneDrag(index,source,e){
  cancelStoneDrag();const targets=stoneDropTargets(index);if(!targets.length)return;
@@ -971,8 +988,8 @@ const Fx=(()=>{
  const REACTIONS=Object.freeze({boa:'👏 Boa!',ai:'😅 Ai!',revanche:'🔥 Revanche!',pensando:'🤔 Pensando…',querover:'😎 Quero ver essa!',mesa:'🔥 Essa mesa tá quente!',sorte:'🍀 Hoje é meu dia!'});
  const TROPHIES={first:'🏆 Primeira vitória',streak:'🔥 Três vitórias seguidas',five:'🥇 Cinco vitórias',modes:'🎖️ Venceu nas 3 modalidades',carroca:'🁣 Batida de carroça'};
  const KEY='domino.friends.progress.v1';
- let vibration=read('domino.friends.vibration',true)!==false,music=read('domino.friends.music',true)!==false;
- let musicBus=null,nextNote=0,noteStep=0,musicPreviewUntil=0,lastSend=0,revealTimer=null,revealGame=null;
+ let vibration=read('domino.friends.vibration',true)!==false;
+ let lastSend=0,revealTimer=null,revealGame=null;const celebrationVoices=new Set();
  let previousGame=null;const ended=new Set(),socialSeen=new Set(),rate=new Map(),nodes=new Set(),cleanups=new Set();
  const motion=()=>!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
  const keyName=name=>String(name).normalize('NFKC').trim().toLocaleLowerCase('pt-BR');
@@ -985,32 +1002,23 @@ const Fx=(()=>{
   try{return navigator.vibrate(kind==='win'?[65,45,90,45,130]:kind==='batida'?[45,35,75]:18)}catch{return false}
  }
  function isNearEnd(g){return !!g&&!g.over&&(g.counts?.some(n=>n<=2)||g.points?.some(n=>n>=80));}
- function tone(frequency,start,duration,volume=.018){
-  if(!stoneAudio||stoneAudio.state!=='running')return;
-  const osc=stoneAudio.createOscillator(),gain=stoneAudio.createGain();osc.type='sine';osc.frequency.value=frequency;
-  gain.gain.setValueAtTime(0,start);gain.gain.linearRampToValueAtTime(volume,start+.025);gain.gain.exponentialRampToValueAtTime(.0001,start+duration);
-  osc.connect(gain);gain.connect(musicBus||stoneAudio.destination);osc.start(start);osc.stop(start+duration+.02);osc.onended=()=>{osc.disconnect();gain.disconnect()};
- }
- function musicAllowed(){return music&&soundEnabled&&!document.hidden&&((V?.game&&!V.game.over&&!V.game.paused&&$('partida').classList.contains('active'))||Date.now()<musicPreviewUntil);}
- function stopMusic(){if(musicBus&&stoneAudio)musicBus.gain.setTargetAtTime(0,stoneAudio.currentTime,.035);nextNote=0;}
- function musicTick(){
-  if(!musicAllowed()||!stoneAudio||stoneAudio.state!=='running'){stopMusic();return;}
-  if(!musicBus){musicBus=stoneAudio.createGain();musicBus.gain.value=0;musicBus.connect(stoneAudio.destination);}
-  musicBus.gain.setTargetAtTime(.65,stoneAudio.currentTime,.12);
-  const now=stoneAudio.currentTime;if(nextNote<now-.2)nextNote=now+.04;if(nextNote>now+.12)return;
-  const melody=[220,261.63,329.63,293.66,220,196,261.63,246.94];
-  const beat=isNearEnd(V?.game)? .37 : .56;tone(melody[noteStep%melody.length],nextNote,beat*.85,.025);
-  if(noteStep%4===0)tone(noteStep%8===0?110:130.81,nextNote,beat*1.6,.018);
-  noteStep++;nextNote+=beat;
+ // Fanfare curta somente na batida/fim: não há trilha nem temporizador musical.
+ function stopCelebration(){for(const voice of celebrationVoices){try{voice.osc.stop();voice.osc.disconnect();voice.gain.disconnect()}catch{}}celebrationVoices.clear();}
+ async function celebration(){
+  if(!soundEnabled||document.hidden)return false;
+  const ctx=await unlockSound();if(!ctx||ctx.state!=='running'||!soundEnabled||document.hidden)return false;
+  stopCelebration();const start=ctx.currentTime+.025;
+  const notes=[[523.25,0,.20,.07],[659.25,.11,.20,.07],[783.99,.22,.22,.075],[1046.5,.36,.40,.08],[1318.5,.57,.36,.05],[783.99,.78,.52,.045],[1046.5,.78,.55,.05],[1567.98,.78,.48,.025]];
+  for(const [freq,delay,duration,volume] of notes){const osc=ctx.createOscillator(),gain=ctx.createGain(),at=start+delay;osc.type='triangle';osc.frequency.value=freq;gain.gain.setValueAtTime(.0001,at);gain.gain.exponentialRampToValueAtTime(volume,at+.012);gain.gain.exponentialRampToValueAtTime(.0001,at+duration);osc.connect(gain);gain.connect(ctx.destination);const voice={osc,gain};celebrationVoices.add(voice);osc.onended=()=>{osc.disconnect();gain.disconnect();celebrationVoices.delete(voice)};osc.start(at);osc.stop(at+duration+.03);}
+  return true;
  }
  function syncControls(){
   for(const id of ['fxSound']){const el=$(id);if(el){el.textContent=soundEnabled?'Som ligado':'Som desligado';el.setAttribute('aria-pressed',String(soundEnabled));}}
   for(const id of ['fxVibration','fxVibrationSetting']){const el=$(id);if(el){el.textContent=vibration?'Vibração ligada':'Vibração desligada';el.setAttribute('aria-pressed',String(vibration));}}
-  for(const id of ['fxMusic','fxMusicSetting']){const el=$(id);if(el){el.textContent=music?'Música ligada':'Música desligada';el.setAttribute('aria-pressed',String(music));}}
-  const note=$('fxDeviceNote');if(note)note.textContent=typeof navigator.vibrate==='function'?'Som e música começam após um toque. Efeitos respeitam a preferência por movimento reduzido.':'Este navegador não oferece vibração (comum no iPhone). Som, música e efeitos visuais continuam disponíveis após um toque.';
+  const note=$('fxDeviceNote');if(note)note.textContent=typeof navigator.vibrate==='function'?'O som de batida começa após um toque. Efeitos respeitam a preferência por movimento reduzido.':'Este navegador não oferece vibração (comum no iPhone). Som e efeitos visuais continuam disponíveis após um toque.';
  }
  function toggleVibration(){vibration=!vibration;save('domino.friends.vibration',vibration);if(!vibration)try{navigator.vibrate?.(0)}catch{}else haptic();syncControls();}
- function toggleMusic(){music=!music;save('domino.friends.music',music);if(music)unlockSound();else stopMusic();syncControls();}
+
  function openPanel(){syncControls();$('fxPanel').showModal();}
  function closePanel(){ $('fxPanel').close(); }
  function toast(title,detail='',kind=''){
@@ -1116,7 +1124,7 @@ const Fx=(()=>{
   const g=view.game;if(ended.has(g.id))return;ended.add(g.id);if(ended.size>160)ended.delete(ended.values().next().value);
   if(g.result?.aborted||!g.result?.roundWinners?.length)return;
   const complete=view.room.mode!=='Ponta de 5'||g.result.matchOver,mine=g.result.winners?.length===1&&g.result.winners[0]===view.self;
-  const kind=endKind(view);if(kind==='batida'||kind==='carroca')haptic('batida');
+  const kind=endKind(view);if(kind==='batida'||kind==='carroca'){haptic('batida');celebration();}else if(complete&&g.result.winners?.length===1)celebration();
   const show=()=>{if(complete){confetti();if(mine)haptic('win');}if(kind==='carroca')toast('BATIDA DE CARROÇA!','Efeito visual · pontuação preservada');else if(kind==='closed')toast('JOGO TRANCADO','Vence a menor soma, conforme as regras da mesa.');};
   if(!motion()||!$('resultado').classList.contains('active')){show();return;}
   stopReveal();revealGame=g.id;$('fxReveal').innerHTML=revealMarkup(view)+'<button class="secondary" onclick="Fx.skipReveal()">Ver resultado agora</button>';$('fxReveal').hidden=false;$('result').classList.add('fx-awaiting');
@@ -1125,7 +1133,7 @@ const Fx=(()=>{
  }
  function skipReveal(){const g=V?.game;stopReveal();if(g&&(V.room.mode!=='Ponta de 5'||g.result?.matchOver)){confetti();if(g.result?.winners?.length===1&&g.result.winners[0]===V.self)haptic('win');}}
  function onState(before,next){
-  const g=next?.game,old=before?.game;if(!g){stopReveal();previousGame=null;stopMusic();return;}
+  const g=next?.game,old=before?.game;if(!g){stopReveal();previousGame=null;return;}
   if(previousGame!==g.id){stopReveal();previousGame=g.id;$('fxResultActions').hidden=!g.over;$('fxSocialStatus').textContent='';}
   const arena=$('arena');arena.classList.toggle('fx-tense',isNearEnd(g));arena.classList.toggle('fx-critical',!g.over&&(g.counts.some(n=>n===1)||g.points.some(n=>n>=95)));
   const action=g.lastAction,fresh=old?.id===g.id&&action&&action.id>(old.lastAction?.id||0);
@@ -1134,28 +1142,28 @@ const Fx=(()=>{
    if(motion()&&!g.over){animate($('board'),[{translate:'0 0'},{translate:'1px 1px',offset:.35},{translate:'-1px 0',offset:.65},{translate:'0 0'}],{duration:170});}
    if(g.counts[action.player]===1)bubble(action.player,'Falta 1 peça!',next.room.players[action.player].name,true);
   }
-  if(g.over){stopMusic();recordProgress(next);resultExtras();if(!old?.over||old.id!==g.id)presentEnd(next);}
-  else{stopReveal();musicTick();}
+  if(g.over){recordProgress(next);resultExtras();if(!old?.over||old.id!==g.id)presentEnd(next);}
+  else{stopReveal();}
  }
  function preview(kind){
   if(V?.game&&!V.game.over){$('fxPanelStatus').textContent='Veja a demonstração quando terminar a rodada.';return;}
   closePanel();const dialog=$('fxDemo');dialog.showModal();
-  if(kind==='music'){musicPreviewUntil=Date.now()+8000;unlockSound();dialog.innerHTML='<small class="fx-demo-label">DEMONSTRAÇÃO</small><h2>Música suave</h2><p>O andamento acelera perto do fim da partida. Esta prévia dura oito segundos.</p><button onclick="Fx.closeDemo()">Fechar</button>';return;}
+  if(kind==='batidaSound'){dialog.innerHTML='<small class="fx-demo-label">DEMONSTRAÇÃO</small><h2>🎉 Som de batida</h2><p>Uma celebração curta quando alguém bate. Sem música de fundo durante o jogo.</p><button onclick="Fx.closeDemo()">Fechar</button>';celebration();return;}
   if(kind==='reaction'){dialog.innerHTML='<small class="fx-demo-label">DEMONSTRAÇÃO</small><h2>👏 Boa!</h2><p>Amigo · reação rápida</p><button onclick="Fx.closeDemo()">Fechar</button>';return;}
   const g={id:'demo',over:true,chain:[[6,6],[6,2],[2,4]],counts:kind==='closed'?[2,2]:[0,2],points:[105,80],lastAction:{type:'place',player:0,tile:kind==='carroca'?[6,6]:[2,4]},allHands:[[],[[4,5],[3,6]]],result:{winners:[0],roundWinners:[0],matchOver:true}},view={self:0,room:{mode:'Ponta de 5',players:[{name:'Você'},{name:'Amigo'}]},game:g};
   dialog.innerHTML=revealMarkup(view,true)+'<div class="fx-prize"><b>Você ganhou!</b><strong>105 pontos</strong><small>R$ 0,00 · moedas decorativas</small></div><button onclick="Fx.closeDemo()">Fechar demonstração</button>';confetti(dialog);
  }
- function closeDemo(){musicPreviewUntil=0;stopMusic();$('fxDemo').close();}
- function leaveView(){if(!$('resultado').classList.contains('active'))stopReveal();if(!$('partida').classList.contains('active'))stopMusic();}
- function reset(){stopReveal();musicPreviewUntil=0;stopMusic();previousGame=null;rate.clear();socialSeen.clear();for(const id of cleanups)clearTimeout(id);cleanups.clear();for(const el of nodes)el.remove();nodes.clear();}
+ function closeDemo(){stopCelebration();$('fxDemo').close();}
+ function leaveView(){if(!$('resultado').classList.contains('active')){stopReveal();stopCelebration();}}
+ function reset(){stopReveal();stopCelebration();previousGame=null;rate.clear();socialSeen.clear();for(const id of cleanups)clearTimeout(id);cleanups.clear();for(const el of nodes)el.remove();nodes.clear();}
  function init(){
   $('fxReactionChoices').innerHTML=Object.entries(REACTIONS).map(([key,label])=>`<button onclick="Fx.sendReaction('${key}')">${label}</button>`).join('');
   for(const id of ['fxPanel','fxDemo']){$(id).addEventListener('click',e=>{if(e.target===$(id)){if(id==='fxDemo')closeDemo();else closePanel();}});}
-  $('fxDemo').addEventListener('close',()=>{musicPreviewUntil=0;stopMusic();});
-  document.addEventListener('visibilitychange',()=>{if(document.hidden){stopMusic();try{navigator.vibrate?.(0)}catch{}}});
-  setInterval(musicTick,200);syncControls();renderProgress();
+  $('fxDemo').addEventListener('close',stopCelebration);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){stopCelebration();try{navigator.vibrate?.(0)}catch{}}});
+  syncControls();renderProgress();
  }
- return {init,onState,openPanel,closePanel,toggleVibration,toggleMusic,syncControls,sendReaction,hostSocial,receiveSocial,rematch,shareResult,renderProgress,resultExtras,preview,closeDemo,skipReveal,leaveView,reset,haptic,isNearEnd,recordProgress,loadProgress,endKind,stopMusic};
+ return {init,onState,openPanel,closePanel,toggleVibration,syncControls,sendReaction,hostSocial,receiveSocial,rematch,shareResult,renderProgress,resultExtras,preview,closeDemo,skipReveal,leaveView,reset,haptic,isNearEnd,recordProgress,loadProgress,endKind,stopCelebration,celebration};
 })();
 // Adaptadores aditivos: os caminhos de jogada existentes continuam sendo chamados sem mudanças.
 const fxBaseReceive=receive;
@@ -1167,7 +1175,7 @@ go=function(id){fxBaseGo(id);Fx.leaveView();if(id==='inicio')Fx.renderProgress()
 const fxBaseReset=resetNetwork;
 resetNetwork=function(){Fx.reset();fxBaseReset();};
 const fxBaseSyncSound=syncSoundButtons;
-syncSoundButtons=function(){fxBaseSyncSound();Fx.syncControls();if(!soundEnabled)Fx.stopMusic();};
+syncSoundButtons=function(){fxBaseSyncSound();Fx.syncControls();if(!soundEnabled)Fx.stopCelebration();};
 const fxBaseHandleAction=handleAction;
 handleAction=function(i,m,c,automatic=false){if(m?.type==='fx-reaction'){Fx.hostSocial(i,m.key,m.request===true);return;}return fxBaseHandleAction(i,m,c,automatic);};
 Fx.init();
