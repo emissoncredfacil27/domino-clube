@@ -512,7 +512,7 @@ body .arena .player-chip { min-height:57px; }
 //# sourceMappingURL=peerjs.min.js.map
 </script><script>
 'use strict';
-const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261018-effects3';
+const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261018-effects4';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uuid=()=>crypto.randomUUID().replaceAll('-','');
 const RECONNECT_MS=120000;
@@ -554,7 +554,7 @@ function localReconnectExpired(now=Date.now()){
  g.allHands=null;go('resultado');render();return true;
 }
 function updateReconnectNotice(){
- const el=$('reconnectNotice'),g=V?.game;if(!el)return;
+ const el=$('reconnectNotice'),g=V?.game;if(!el)return;effectRoot().appendChild(el);
  const deadline=hosting?g?.reconnectDeadline:clientReconnectDeadline();
  el.hidden=!g||g.over||!g.paused||!Number.isFinite(deadline);if(el.hidden)return;
  const seconds=Math.max(0,Math.ceil((deadline-(Date.now()+(hosting?serverClockOffset:0)))/1000));
@@ -806,7 +806,7 @@ function showPointsToast(points,name){
  scorePopupQueue.push({points,name});if(scorePopupTimer===null)nextScoreToast();
 }
 function nextScoreToast(){
- const el=$('scoreToast'),item=scorePopupQueue.shift();if(!item){el.hidden=true;scorePopupTimer=null;return;}
+ const el=$('scoreToast'),item=scorePopupQueue.shift();effectRoot().appendChild(el);if(!item){el.hidden=true;scorePopupTimer=null;return;}
  const arena=document.querySelector('#partida.active .arena,#tablePreview.active .arena');
  if(arena){const r=arena.getBoundingClientRect();el.style.left=(r.left+r.width/2)+'px';el.style.top=(r.top+r.height/2)+'px';}else{el.style.left='50%';el.style.top='50%';}
  el.classList.toggle('pass-toast',item.type==='pass');el.querySelector('strong').textContent=item.type==='pass'?'PASSOU':'+'+item.points;
@@ -821,6 +821,10 @@ function showScoreGains(before,next){
  g.points.forEach((value,i)=>{const gain=value-(old.points[i]||0);if(gain>0)showPointsToast(gain,next.room.players[i].name);});
 }
 // Efeitos efêmeros: nunca expõem a face da pedra comprada por outro jogador.
+function effectRoot(){return document.fullscreenElement||document.webkitFullscreenElement||document.body;}
+function syncEffectLayer(){for(const id of ['scoreToast','reconnectNotice']){const el=$(id);if(el)effectRoot().appendChild(el);}}
+document.addEventListener('fullscreenchange',syncEffectLayer);
+document.addEventListener('webkitfullscreenchange',syncEffectLayer);
 const visualTimers=new Set();let urgentTurnKey='';
 function visualLater(fn,ms){const id=setTimeout(()=>{visualTimers.delete(id);fn()},ms);visualTimers.add(id);}
 function clearVisualEffects(){for(const id of visualTimers)clearTimeout(id);visualTimers.clear();document.querySelectorAll('.draw-flight').forEach(el=>el.remove());urgentTurnKey='';}
@@ -832,7 +836,7 @@ function animateDraw(player,preview=false){
  const badge=document.createElement('span');badge.className='draw-badge';badge.textContent='+1 pedra';chip.appendChild(badge);visualLater(()=>badge.remove(),1100);
  if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;
  const from=(arena.querySelector('.stock-pile')||$('draw')).getBoundingClientRect(),to=chip.getBoundingClientRect();
- const stone=document.createElement('div');stone.className='draw-flight';stone.setAttribute('aria-hidden','true');stone.style.left=(from.left+from.width/2-16)+'px';stone.style.top=(from.top+from.height/2-30)+'px';document.body.appendChild(stone);
+ const stone=document.createElement('div');stone.className='draw-flight';stone.setAttribute('aria-hidden','true');stone.style.left=(from.left+from.width/2-16)+'px';stone.style.top=(from.top+from.height/2-30)+'px';effectRoot().appendChild(stone);
  const a=stone.animate([{opacity:0,transform:'translate(0,0) rotate(-18deg) scale(.65)'},{opacity:1,offset:.2},{opacity:1,offset:.8},{opacity:0,transform:`translate(${to.left+to.width/2-from.left-from.width/2}px,${to.top+to.height/2-from.top-from.height/2}px) rotate(12deg) scale(.8)`}],{duration:650,easing:'cubic-bezier(.2,.7,.3,1)'});
  a.onfinish=()=>stone.remove();visualLater(()=>stone.remove(),850);
  if(!preview&&player===V?.self){const last=$('hand').lastElementChild;last?.classList.add('new-stone');}
