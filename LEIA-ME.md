@@ -1,94 +1,44 @@
-# Dominó Clube — código inicial
+# Dominó Clube — online entre amigos
 
-Abra index.html em um navegador. Não requer instalação ou bibliotecas externas. Para links compartilháveis, hospede o arquivo por HTTPS. Este pacote entrega estrutura de telas, fluxo e um motor local de partidas contra robôs. Não entrega um serviço multiplayer em produção.
+Versão sem robôs. Publique index.html no GitHub Pages por HTTPS. PeerJS 1.5.5 está incorporado no HTML; a conexão usa o serviço de sinalização PeerJS Cloud e WebRTC.
 
-## Telas e fluxo
+## Como jogar
 
-| Tela | Conteúdo e ação |
-|---|---|
-| Início | Modalidades, desempenho local e criar mesa |
-| Criar mesa | Nome, 2/4 participantes, modalidade, nível dos robôs, sem aposta ou valor simulado mínimo R$ 5 |
-| Convite | Código, resumo completo das regras, valor, taxa, aceite e WhatsApp com mensagem pronta |
-| Carteira | Estado indisponível para saldo/Pix/saques, preferência de limite diário e pausa local |
-| Partida | Turnos, pontas, mão, estoque, quantidade de pedras adversárias e desistência |
-| Resultado | Vencedor/empate, todas as mãos, pontos e histórico local |
-| Ajustes | Cor de pedras/mesa e intervalo dos robôs |
+1. Dono: informar nome, escolher Clássico, Ponta de 5 ou Fechado e mesa de 2 ou 4 pessoas.
+2. Enviar o link pelo WhatsApp, copiar link ou compartilhar o código de 12 caracteres.
+3. Amigos: abrir link, informar nome e entrar. Ver regras completas e confirmar aceite.
+4. Dono: aceitar as regras e tocar em Iniciar partida quando todos estiverem presentes e prontos.
+5. Todos acompanham a mesma sequência de jogadas. Cada convidado recebe somente a própria mão e as contagens adversárias. Todas as pedras são mostradas no resultado.
+6. Dono pode preparar outra rodada com os mesmos amigos; todos precisam aceitar novamente.
 
-Fluxo local: Início → Criar → Revisar e aceitar → Iniciar com robôs → Partida → Resultado.
-Fluxo online planejado: dono cria → amigos abrem convite → servidor apresenta regras e valor oficiais → todos aceitam a mesma versão → dono inicia → servidor valida lugares/aceites/reservas → partida → liquidação única → resultado.
+Mantenha a página aberta e o aparelho ativo. Trocar de app ou bloquear o iPhone pode suspender a conexão. Após copiar/enviar convite, volte ao jogo. Não há jogo contra o computador.
 
-O botão WhatsApp abre uma mensagem para o usuário escolher o destinatário e enviar. O link contém configuração da demonstração; não é uma sala compartilhada. Quem abrir poderá iniciar sua própria simulação. Não há lista de presença nem sincronização entre aparelhos.
+## Regras da casa
 
-## Regras da casa implementadas
+28 pedras, 7 por pessoa, 2 ou 4 participantes individuais (sem equipes), primeiro jogador aleatório, primeira pedra livre.
 
-São propostas iniciais, não uma afirmação de que os nomes tenham regras universais. Validar especialmente Ponta de 5 antes da versão final.
+- Clássico: compra até encaixar ou acabar estoque; passa apenas sem encaixe e sem estoque. Mão vazia vence; trancamento usa menor soma na mão, igualdade empata.
+- Fechado: sem compra. Todos passarem consecutivamente encerra a rodada. Mão vazia vence; trancamento usa menor soma, igualdade empata.
+- Ponta de 5: compra como Clássico. Soma das duas pontas em múltiplo positivo de cinco rende essa quantidade de pontos. Sem ramificações; primeira pedra conta os dois lados. Ao bater/trancar, maior pontuação vence; menor soma na mão desempata; igualdade final empata. Uma rodada por partida.
+- Desistência cancela rodada sem vencedor.
+- Desconexão pausa as jogadas por até 120 segundos; retorno com o mesmo identificador de sessão recupera lugar e mão. Passado o prazo, cancelamento sem vencedor. Se o dono fechar/recarregar a página, o estado da mesa é perdido e é necessário criar outra.
 
-- Duplo-seis: 28 pedras, 7 por participante, 2 ou 4 jogadores individuais, sem duplas por equipe. Primeiro jogador aleatório; primeira pedra livre.
-- Clássico: comprar até encontrar encaixe ou acabar o estoque; passar apenas sem encaixe. Vence quem esvazia a mão; trancamento vence menor soma na mão; igualdade resulta em empate.
-- Fechado: não compra. Pedras não distribuídas permanecem fora do jogo. Todos passarem consecutivamente encerra a rodada; menor soma vence, igualdade empata.
-- Ponta de 5: compra como Clássico; soma das duas pontas, quando múltiplo positivo de 5, rende essa quantidade de pontos. Sem ramificações por duplas. Ao bater ou trancar, maior pontuação vence; menor soma na mão desempata. Persistindo igualdade, empate. Uma rodada por partida; sem meta de 100/150 pontos nesta versão.
-- Robô fácil escolhe jogada aleatória; médio prioriza descartar a maior soma; difícil também prioriza pontos em Ponta de 5. Não há busca profunda nem acesso às mãos adversárias para decidir.
-- Ao concluir, exibe todas as mãos, incluindo em abandono.
+As regras dos nomes Ponta de 5 e Fechado podem variar. Estas são as regras exibidas aos amigos para aceite nesta versão.
 
-## Apostas e segurança: escopo inicial
+## Arquitetura e limites
 
-Não há dinheiro real, cadastro real, upload de documentos, verificação de identidade/idade, depósito, saque, saldo financeiro ou bloqueio de valores. A declaração de idade é somente uma etapa visual. Os botões Pix/saque ficam desabilitados. O valor exibido é simulado; estatísticas locais podem ser alteradas pelo próprio usuário.
+Página estática + PeerJS Cloud para sinalização + canais WebRTC. O navegador do dono mantém e valida o estado da partida, distribui as mãos, verifica turno/encaixe/compra e envia visões individuais. Não há banco de partidas nem servidor autoritativo independente. O dono tecnicamente controla o estado completo; inadequado para apostas reais ou competição com adversários não confiáveis.
 
-Proposta de regras para futura integração, a ser validada antes do lançamento:
+O histórico salvo é local. Nomes e mensagens de partida transitam pelos canais de dados entre os participantes. Os identificadores de conexão passam pelo serviço de sinalização; não inserir CPF, documentos, telefones ou dados financeiros. Compartilhe o convite apenas com seus amigos; quem tiver o link pode ocupar um lugar livre. Não há cadastro ou identidade verificada.
 
-1. Todos aceitam o mesmo valor em centavos, mínimo 500, regras versionadas e taxa explícita. Taxa proposta no protótipo: zero. Prêmio teórico: valor por pessoa × número de participantes.
-2. Cancelamento antes do início devolve todas as reservas. Empate devolve reservas integralmente e sem taxa.
-3. Desistência após o início: em 2 jogadores, vitória do adversário; em 4, encerramento da mesa e devolução das reservas nesta proposta inicial, sujeita à revisão por risco de abuso. O protótipo apenas registra abandono, sem liquidar prêmio.
-4. Queda de conexão: prazo proposto de 120 segundos para reconectar com a mesma identidade. O servidor mantém a mesa pausada; expirado o prazo, aplica a regra de desistência. Falha do serviço invalida a partida e devolve reservas. Esses temporizadores NÃO estão implementados no arquivo local.
-5. Não permitir apostas contra robôs com dinheiro real. Limites diários e pausa validados no servidor antes de aceitar depósitos ou entrar em partidas valendo. Conta pausada conserva acesso ao histórico e saque disponível conforme estado da transação.
-6. Exibir em toda confirmação de aposta: 18+, valor individual, total, taxa, prêmio, regra de empate, desistência e desconexão, aviso de jogo responsável.
+Conectividade depende das redes e do serviço de sinalização. Esta versão não configura um relay TURN dedicado; redes que impeçam WebRTC direto podem não conectar. Em erro de conexão, o app avisa para verificar a internet ou tentar outra rede. Para serviço profissional com disponibilidade e reconexão persistente, implementar servidor de salas/partidas e relay de rede adequado.
 
-## Arquitetura para implementação online
+Pix, carteira, saque e apostas reais permanecem desativados. Pagamentos e identidade exigem serviços próprios e avaliação da operação antes de ativação.
 
-Frontend HTTPS → API autenticada → serviço autoritativo de mesas/turnos → banco transacional. Canal WebSocket ou equivalente transmite presença e eventos com número sequencial; reconexão recupera snapshot autorizado. Servidor embaralha, valida movimentos e envia a cada jogador somente sua mão e as contagens adversárias. Revela mãos apenas no encerramento.
+## Verificação automatizada
 
-Módulos separados: identidade/idade via provedor; pagamentos; livro financeiro; partidas; auditoria; limites e pausa. Nenhum segredo do provedor no HTML. Seleção de provedor e viabilidade regulatória ainda não avaliadas. Este pacote não certifica autorização para operar apostas.
+120 partidas simulando ações humanas nas três modalidades, 2/4 participantes, verificando conservação/encaixe das pedras e conclusão. Testes adicionais para mãos individuais nos snapshots, aceites, início exclusivo pelo dono, turno, pausa e abandono. Simulações não substituem testes entre redes diferentes.
 
-### Contratos de API propostos (não implementados)
+## Dependência
 
-| Método / rota | Responsabilidade |
-|---|---|
-| POST /sessions | Autenticar usuário, sessão segura e proteção contra abuso |
-| POST /identity/sessions | Criar sessão do provedor de identidade; sem guardar documento no navegador |
-| POST /rooms | Criar mesa com enum de modalidade, 2/4 lugares, valor inteiro em centavos e versão das regras |
-| GET /invites/:token | Mostrar resumo público mínimo da mesa, sem dados pessoais nem mãos |
-| POST /rooms/:id/join | Ocupar lugar atomicamente, impedindo duplicidade e excesso de vagas |
-| POST /rooms/:id/accept | Registrar usuário, valor, taxa e hash/versão das regras aceitas |
-| POST /rooms/:id/start | Somente dono; validar ocupação, aceites, identidade, pausa e saldo de todos |
-| POST /rooms/:id/moves | Validar turno, pedra, ponta e sequência esperada; rejeitar duplicação |
-| GET /rooms/:id/events?after=N | Eventos autorizados para recuperação de conexão |
-| POST /rooms/:id/leave | Aplicar política de desistência no servidor |
-| GET /wallet | Saldo disponível/bloqueado e extrato paginado autenticado |
-| POST /pix/deposits | Criar cobrança no provedor com chave de idempotência e limite diário atômico |
-| POST /withdrawals | Validar titularidade, saldo disponível e reservar valor até confirmação |
-| POST /webhooks/payments | Verificar assinatura, impedir replay e conciliar evento oficial do provedor |
-| PATCH /account/limits | Aplicar limite no servidor; definir política para aumentos e reduções |
-| POST /account/pause | Impedir novas apostas/depósitos durante a pausa |
-
-### Dados e invariantes
-
-users, identity_checks, account_controls, rooms, seats, rule_versions, consents, matches, match_events, wallet_accounts, ledger_entries, payment_events, withdrawals, settlements.
-
-- Dinheiro em centavos inteiros, nunca ponto flutuante. Livro financeiro de partidas dobradas, imutável e conciliado com o provedor.
-- Transação única para reservar o valor de todos ao iniciar: se um falhar, desfazer todas as reservas e não iniciar.
-- Liquidação com restrição única por match_id. Confirmar resultado autoritativo antes de transferir reservas ao vencedor e taxa à conta do app.
-- Webhooks deduplicados por ID oficial do evento. Depósitos só creditados após confirmação autenticada do provedor; nunca pelo retorno visual do Pix.
-- Autorização por usuário/mesa em todas as rotas, proteção CSRF conforme mecanismo de sessão, rate limiting, logs de auditoria sem documentos/segredos.
-- Convite online com token aleatório opaco, expiração e regras recuperadas do servidor. Não confiar em valor ou regra enviados pelo link.
-- Saque com estados requested → reserved → submitted → paid/failed; falha conciliada libera reserva uma vez.
-
-## Próximas entregas
-
-1. Confirmar as regras locais e se 4 jogadores significa individual ou duplas.
-2. Implementar backend, presença, convite real, reconexão e testes de concorrência sem dinheiro.
-3. Integrar identidade e controles de conta.
-4. Avaliar operação de apostas e provedor adequado antes de integrar pagamentos reais.
-
-## Limitações de verificação
-
-O pacote inclui testes automáticos de conservação das 28 pedras, encaixes e conclusão de partidas simuladas nas três modalidades com 2/4 jogadores e nos três níveis. A interface não foi validada visualmente em um iPhone nesta execução.
+PeerJS 1.5.5 — https://github.com/peers/peerjs — licença MIT. Biblioteca incorporada ao index.html. Documentação: https://peerjs.com/client/getting-started e https://peerjs.com/server/cloud.
