@@ -472,6 +472,8 @@ body .arena .player-chip { min-height:57px; }
 .new-stone { animation:rack-deal 550ms ease-out both; }
 .one-left { animation:last-stone-glow 600ms ease-in-out 3; }
 .clock-alert { animation:last-stone-glow 600ms ease-in-out 3; }
+.pass-toast.score-pop { animation:pass-pop-in 230ms ease-out both; }
+@keyframes pass-pop-in { from{opacity:1;transform:translate(-50%,-50%) scale(.94)}to{opacity:1;transform:translate(-50%,-50%) scale(1)} }
 .pass-toast strong { font-size:clamp(32px,7vw,54px);color:#b7ffcf; }
 .result-winner { animation:result-reveal 450ms ease-out both; }
 .reconnect-notice { position:fixed;z-index:1450;left:50%;top:40%;transform:translate(-50%,-50%);width:min(320px,85vw);padding:22px;border:1px solid #e9cb8d;border-radius:20px;background:#102f2bf5;box-shadow:0 12px 40px #001d2280;text-align:center;pointer-events:none; }
@@ -484,7 +486,7 @@ body .arena .player-chip { min-height:57px; }
 @keyframes result-reveal { from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none} }
 @media(max-width:400px){body .arena .hand-count{font-size:18px;min-width:25px;min-height:23px;padding:1px 4px}.stock-pile{left:8px;top:75px}}
 @media(orientation:landscape) and (max-height:560px){.stock-pile{top:68px;left:12px}.stock-pile i{width:23px;height:42px}body .arena .player-chip{min-height:47px}body .arena .hand-count{font-size:18px;min-height:22px}}
-@media(prefers-reduced-motion:reduce){.count-bump,.new-stone,.one-left,.clock-alert,.result-winner{animation:none}}
+@media(prefers-reduced-motion:reduce){.count-bump,.new-stone,.one-left,.clock-alert,.result-winner,.pass-toast.score-pop{animation:none}}
 </style><header><b>▣ DOMINÓ <span class="gold">CLUBE</span></b><span class="badge">SÓ ENTRE AMIGOS</span></header><main><p id="network" class="status" role="status" aria-live="polite">Crie uma mesa ou entre pelo código de um amigo.</p><p id="error" class="error" role="alert"></p>
 <section id="inicio" class="active"><span class="gold">SUA TURMA. SUA MESA.</span><h1>Amigos de verdade.<br>A mesma mesa.</h1><p class="muted">Jogue online com 2, 3 ou 4 pessoas. Compartilhe o convite e espere seus amigos entrarem.</p><button onclick="go('criar')">＋ Criar mesa</button><button class="secondary" onclick="go('entrar')">Entrar na mesa</button><div class="grid"><div class="card"><h3>Clássico</h3><p>Encaixe as pedras e esvazie sua mão.</p></div><div class="card"><h3>Ponta de 5</h3><p>Pontue com a soma das pontas em múltiplos de cinco.</p></div><div class="card"><h3>Fechado</h3><p>Sem compra: jogue ou passe a vez.</p></div></div><div class="notice">Mantenham o jogo aberto durante a partida. A mesa depende da conexão do dono. Nesta versão, as partidas são gratuitas.</div><div class="card"><h3>Seu histórico neste aparelho</h3><div id="history"></div></div></section>
 <section id="criar"><h2>Monte sua mesa</h2><div class="card"><label>Seu nome<input id="nome" maxlength="32" autocomplete="nickname" placeholder="Como seus amigos te chamam?"></label><div class="grid"><label>Modalidade<select id="modo"><option>Clássico</option><option>Ponta de 5</option><option>Fechado</option></select></label><label>Participantes<select id="qtd"><option value="2">2 jogadores</option><option value="3">3 jogadores • individual</option><option value="4">4 jogadores • individual</option></select></label></div><p>Sem aposta • entrada gratuita</p><button onclick="createRoom()" id="createBtn">Criar mesa online</button></div></section>
@@ -510,7 +512,7 @@ body .arena .player-chip { min-height:57px; }
 //# sourceMappingURL=peerjs.min.js.map
 </script><script>
 'use strict';
-const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261018-effects2';
+const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261018-effects3';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uuid=()=>crypto.randomUUID().replaceAll('-','');
 const RECONNECT_MS=120000;
@@ -563,8 +565,8 @@ function updateReconnectNotice(){
 function reportPresence(){
  if(!V?.game)return;
  const away=document.visibilityState==='hidden';
- if(hosting){if(expireDisconnected())return;const p=H.players[0];p.connected=!away;p.away=away;p.lostAt=away?(p.lostAt??Date.now()):null;p.last=Date.now();publish();}
- else if(!localReconnectExpired()&&hostConn?.open){try{hostConn.send({type:'presence',away})}catch{hostLostAt??=Date.now();}}
+ if(hosting){expireDisconnected();const p=H.players[0];p.connected=!away;p.away=away;p.lostAt=away?(p.lostAt??Date.now()):null;p.last=Date.now();publish();}
+ else{localReconnectExpired();if(hostConn?.open){try{hostConn.send({type:'presence',away})}catch{hostLostAt??=Date.now();}}}
 }
 document.addEventListener('visibilitychange',reportPresence);
 window.addEventListener('pageshow',()=>{if(document.visibilityState==='visible')reportPresence()});
