@@ -313,7 +313,16 @@ function play(g,i,index,side,mode){const t=g.hands[i][index],o=oriented(g,t,side
 function finish(reason,cancel=false){const g=H.game;if(!g||g.over)return;g.over=true;const sums=g.hands.map(h=>h.reduce((s,t)=>s+t[0]+t[1],0));let candidates=g.hands.map((_,i)=>i);if(!cancel&&H.mode==='Ponta de 5'){const max=Math.max(...g.points);candidates=candidates.filter(i=>g.points[i]===max)}const min=Math.min(...candidates.map(i=>sums[i]));let winners=cancel?[]:candidates.filter(i=>sums[i]===min);g.result={text:cancel?'Rodada cancelada':winners.length===1?H.players[winners[0]].name+' venceu':'Empate',reason,winners,sums};publish()}
 // Cada pedra tem proporção 2:1, pinos em SVG e contraste constante.
 const pipLocations=[[],[[25,25]],[[14,14],[36,36]],[[14,14],[25,25],[36,36]],[[14,14],[36,14],[14,36],[36,36]],[[14,14],[36,14],[25,25],[14,36],[36,36]],[[14,12],[36,12],[14,25],[36,25],[14,38],[36,38]]];
-function stoneFace(t){const half=(n,x)=>pipLocations[n].map(([cx,cy])=>`<circle cx="${cx+x}" cy="${cy}" r="4.4" fill="#14232d"/><circle cx="${cx+x-1}" cy="${cy-1}" r="1.1" fill="#48525c" opacity=".65"/>`).join('');return `<rect x="1" y="3" width="98" height="48" rx="7" fill="#798987"/><rect x="1" y="1" width="98" height="47" rx="7" fill="var(--stone,#f4f5f3)" stroke="#c5d0cb" stroke-width="1.3"/><path d="M8 3H92" stroke="#fff" stroke-opacity=".85" stroke-width="2"/><path d="M50 7V42" stroke="#abb5b0" stroke-width="1.1"/><circle cx="50" cy="25" r="1.6" fill="#9aa7a0"/>${half(t[0],0)}${half(t[1],50)}`}
+// Peça clássica: pontos sólidos, sulco central e borda branca com espessura discreta.
+function stoneFace(t){
+ const half=(n,x)=>pipLocations[n].map(([cx,cy])=>`<circle cx="${cx+x}" cy="${cy}" r="4.8" fill="#101c29"/>`).join('');
+ return `<rect x="1" y="3" width="98" height="48" rx="6.5" fill="#929a9f"/>
+ <rect x="1" y="1" width="98" height="47" rx="6.5" fill="var(--stone,#f4f5f3)" stroke="#c4c9cc" stroke-width="1.2"/>
+ <rect x="2.4" y="2.4" width="95.2" height="43.4" rx="5.3" fill="none" stroke="#fff" stroke-opacity=".95" stroke-width="1.3"/>
+ <path d="M50 6V43" stroke="#aeb4b8" stroke-width="1.5"/>
+ <path d="M51.7 6V43" stroke="#fff" stroke-width="1.4"/>
+ ${half(t[0],0)}${half(t[1],50)}`;
+}
 function tile(t,action='',vertical=false){return `<${action?'button':'span'} class="tile" ${action||`role="img" aria-label="Pedra ${t.join(' e ')}"`}><svg viewBox="${vertical?'0 0 52 100':'0 0 100 52'}" aria-hidden="true" focusable="false">${vertical?`<g transform="translate(52 0) rotate(90)">${stoneFace(t)}</g>`:stoneFace(t)}</svg></${action?'button':'span'}>`}
 // Pedras encostadas de verdade; as curvas usam uma pedra vertical, sem linhas artificiais.
 function chainPositions(chain,lane){let cursor=0,y=0,dir=1,used=0,bridge=false;const nodes=[];for(let i=0;i<chain.length;i++){const t=chain[i];if(bridge){const prev=nodes.at(-1),cx=prev.cx+(prev.double?0:prev.dir*25),cy=prev.cy+prev.h/2+50;nodes.push({t,cx,cy,w:50,h:100,angle:90,bridge:true,double:t[0]===t[1],dir:0});dir=-dir;const next=chain[i+1];y=cy+50+(next&&next[0]===next[1]?50:25);cursor=cx+(dir<0?25:-25);used=0;bridge=false;continue}const double=t[0]===t[1],w=double?50:100,h=double?100:50,cx=cursor+dir*w/2;nodes.push({t,cx,cy:y,w,h,angle:double?90:dir<0?180:0,double,dir,bridge:false});cursor+=dir*w;used+=w;if(used>=lane)bridge=true}return nodes}
