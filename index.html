@@ -774,7 +774,7 @@ function stoneFace(t){
  // A face fotográfica é compartilhada; os números continuam exatos e dinâmicos.
  const half=(n,x)=>pipLocations[n].map(([cx,cy])=>`<circle cx="${cx+x}" cy="${cy}" r="5.2" fill="#aaa594"/><circle data-pip="true" cx="${cx+x}" cy="${cy+.15}" r="4.95" fill="url(#${id}-pip)"/><ellipse cx="${cx+x-1.65}" cy="${cy-1.9}" rx="1.05" ry=".65" fill="#fff" opacity=".38" transform="rotate(-30 ${cx+x-1.65} ${cy-1.9})"/><path d="M${cx+x+2.8} ${cy+2.6}q-1.4 1-2.9.7" fill="none" stroke="#d1d3c1" stroke-opacity=".2" stroke-width=".5" stroke-linecap="round"/>`).join('');
  return `<defs><radialGradient id="${id}-pip" cx=".29" cy=".24" r=".78"><stop stop-color="#62655d"/><stop offset=".22" stop-color="#151712"/><stop offset=".68" stop-color="#010301"/><stop offset=".88" stop-color="#0c100b"/><stop offset="1" stop-color="#414335"/></radialGradient></defs>
- <svg x=".5" y=".5" width="99" height="51" viewBox="32 125 1714 650" preserveAspectRatio="none" overflow="hidden"><image href="${STONE_TEXTURE_URL}" width="1774" height="887"/></svg>
+ <defs><clipPath id="${id}-body"><rect x=".5" y=".5" width="99" height="51" rx="7"/></clipPath></defs><image href="${STONE_TEXTURE_URL}" x="-1.348" y="-9.307" width="102.467" height="69.595" preserveAspectRatio="none" clip-path="url(#${id}-body)"/>
  <rect x="2" y="2" width="96" height="46" rx="6" fill="var(--stone,#f5f3eb)" opacity=".24" style="mix-blend-mode:multiply"/>
  <path d="M50 5V43" stroke="#fff" stroke-opacity=".5" stroke-width="3.7" stroke-linecap="round"/>
  <path d="M50 5V43" stroke="#14160f" stroke-width="2.65" stroke-linecap="round"/>
