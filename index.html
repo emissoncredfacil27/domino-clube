@@ -602,7 +602,7 @@ body.match-mode #hand .tile.playable:focus-visible { outline:3px solid #f3e2a1;o
 //# sourceMappingURL=peerjs.min.js.map
 </script><script>
 'use strict';
-const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261019-bots-rack';
+const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261019-ivory-realistic';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uuid=()=>crypto.randomUUID().replaceAll('-','');
 const RECONNECT_MS=120000;
@@ -766,14 +766,23 @@ const pipLocations=[[],[[25,25]],[[14,14],[36,36]],[[14,14],[25,25],[36,36]],[[1
 // Material marfim, pontos pretos e divisória espessa conforme a referência enviada.
 let stonePaintId=0;
 function stoneFace(t){
- const shade='stone-shade-'+(++stonePaintId);
- const half=(n,x)=>pipLocations[n].map(([cx,cy])=>`<circle cx="${cx+x}" cy="${cy}" r="5" fill="#10100e" stroke="#060605" stroke-width=".45"/>`).join('');
- return `<defs><linearGradient id="${shade}" x1="0" y1="0" x2="0.8" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".4"/><stop offset=".38" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#423d2d" stop-opacity=".14"/></linearGradient></defs>
- <rect x="1" y="3" width="98" height="48" rx="6.5" fill="#97968a"/>
- <rect x="1" y="1" width="98" height="47" rx="6.5" fill="var(--stone,#f5f3eb)" stroke="#c7c5b8" stroke-width=".8"/>
- <rect x="1" y="1" width="98" height="47" rx="6.5" fill="url(#${shade})"/>
- <path d="M7 2.5H93Q97.5 2.5 97.5 7V41" fill="none" stroke="#fff" stroke-opacity=".48" stroke-width="1"/>
- <path d="M50 4.5V44.5" stroke="#171713" stroke-width="3.5"/>
+ // Material compartilhado pela mão e pela mesa. Gradientes leves, sem filtros por ponto.
+ const id='stone-material-'+(++stonePaintId);
+ const half=(n,x)=>pipLocations[n].map(([cx,cy])=>`<circle cx="${cx+x}" cy="${cy}" r="5.25" fill="#d4d0c4"/><circle data-pip="true" cx="${cx+x}" cy="${cy+.3}" r="4.85" fill="url(#${id}-pip)" stroke="#171816" stroke-width=".35"/><path d="M${cx+x-2.7} ${cy-2.6}q1.7-1.1 3.2-.5" fill="none" stroke="#fff" stroke-opacity=".19" stroke-width=".65" stroke-linecap="round"/>`).join('');
+ return `<defs>
+ <linearGradient id="${id}-edge" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f0eee4"/><stop offset=".65" stop-color="#cec8b7"/><stop offset="1" stop-color="#aaa38f"/></linearGradient>
+ <linearGradient id="${id}-face" x1="0" y1="0" x2=".65" y2="1"><stop stop-color="#fff" stop-opacity=".75"/><stop offset=".32" stop-color="#fff" stop-opacity=".12"/><stop offset=".72" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#a69b7d" stop-opacity=".2"/></linearGradient>
+ <radialGradient id="${id}-pip" cx=".32" cy=".24" r=".8"><stop stop-color="#42443f"/><stop offset=".4" stop-color="#121411"/><stop offset=".8" stop-color="#070907"/><stop offset="1" stop-color="#24251f"/></radialGradient>
+ <linearGradient id="${id}-seam" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#676557"/><stop offset=".28" stop-color="#11130f"/><stop offset=".8" stop-color="#080a07"/><stop offset="1" stop-color="#4d4d42"/></linearGradient>
+ </defs>
+ <rect x="1" y="3" width="98" height="48" rx="7" fill="url(#${id}-edge)" stroke="#aaa592" stroke-width=".5"/>
+ <rect x="1" y="1" width="98" height="46.5" rx="7" fill="var(--stone,#f5f3eb)" stroke="#d1cdbf" stroke-width=".65"/>
+ <rect x="1" y="1" width="98" height="46.5" rx="7" fill="url(#${id}-face)"/>
+ <rect x="2.2" y="2.1" width="95.6" height="43.8" rx="6" fill="none" stroke="#fff" stroke-opacity=".68" stroke-width=".7"/>
+ <path d="M7 2.3H92.5Q97.5 2.3 97.5 7.5" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="1.1"/>
+ <path d="M8 47.3H92" fill="none" stroke="#8e846c" stroke-opacity=".22" stroke-width=".75"/>
+ <path d="M50 5V43" stroke="#fff" stroke-opacity=".65" stroke-width="4.3"/>
+ <path d="M50 5V43" stroke="url(#${id}-seam)" stroke-width="2.7" stroke-linecap="round"/>
  ${half(t[0],0)}${half(t[1],50)}`;
 }
 function tile(t,action='',vertical=false){return `<${action?'button':'span'} class="tile" ${action||`role="img" aria-label="Pedra ${t.join(' e ')}"`}><svg viewBox="${vertical?'0 0 52 100':'0 0 100 52'}" aria-hidden="true" focusable="false">${vertical?`<g transform="translate(52 0) rotate(90)">${stoneFace(t)}</g>`:stoneFace(t)}</svg></${action?'button':'span'}>`}
