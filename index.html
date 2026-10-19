@@ -622,6 +622,7 @@ body.match-mode :is(#partida,#tablePreview) .game-board::before {border-style:so
 .real-rack-active > .tile {z-index:2;}
 .real-rack-active > .tile > svg {opacity:0;}
 .real-rack-active .play-choice {z-index:3;}
+body.match-mode :is(#partida,#tablePreview) .real-rack-active.game-rack .tile.playable {background:transparent;}
 @media(prefers-reduced-motion:reduce){.real-3d{will-change:auto}}
 </style><header><b>▣ DOMINÓ <span class="gold">CLUBE</span></b><span class="badge">AMIGOS E ROBÔS</span></header><main><p id="network" class="status" role="status" aria-live="polite">Crie uma mesa ou entre pelo código de um amigo.</p><p id="error" class="error" role="alert"></p>
 <section id="inicio" class="active"><span class="gold">SUA TURMA. SUA MESA.</span><h1>Amigos de verdade.<br>A mesma mesa.</h1><p class="muted">Jogue online com 2, 3 ou 4 pessoas. Compartilhe o convite e espere seus amigos entrarem. Ou treine contra um robô em três níveis.</p><button onclick="go('criar')">＋ Criar mesa</button><button class="secondary" onclick="go('entrar')">Entrar na mesa</button><button class="secondary" onclick="$('botName').value=read('domino.friends.name','');go('robo')">🤖 Jogar com robô</button><div class="grid"><div class="card"><h3>Clássico</h3><p>Encaixe as pedras e esvazie sua mão.</p></div><div class="card"><h3>Ponta de 5</h3><p>Pontue com a soma das pontas em múltiplos de cinco.</p></div><div class="card"><h3>Fechado</h3><p>Sem compra: jogue ou passe a vez.</p></div></div><div class="notice">Mantenham o jogo aberto durante a partida. A mesa depende da conexão do dono. Nesta versão, as partidas são gratuitas.</div><div class="card fx-progress"><h3>Seus troféus e amigos</h3><div id="fxProgressHome"></div></div><div class="card"><h3>Seu histórico neste aparelho</h3><div id="history"></div><button id="clearHistoryBtn" class="secondary" onclick="clearHistory()">Excluir histórico</button><p id="historyFeedback" class="muted" role="status" aria-live="polite"></p></div></section>
@@ -653,7 +654,7 @@ body.match-mode :is(#partida,#tablePreview) .game-board::before {border-style:so
 //# sourceMappingURL=peerjs.min.js.map
 </script><script>
 'use strict';
-const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261019-solid-3d-r2';
+const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261019-solid-3d-r3';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uuid=()=>crypto.randomUUID().replaceAll('-','');
 const RECONNECT_MS=120000;
