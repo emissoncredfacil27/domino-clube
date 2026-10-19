@@ -613,6 +613,16 @@ body.match-mode :is(#partida,#tablePreview) .game-rack {background:linear-gradie
 body.match-mode :is(#partida,#tablePreview) .game-board::before {border-style:solid;border-color:#bcb08429;box-shadow:0 0 0 4px #00291c45,inset 0 0 12px #00180b33;}
 .board-stone {filter:drop-shadow(1px 2px .7px #00120eb3) drop-shadow(3px 5px 3px #00120e80);}
 @media(prefers-reduced-motion:reduce){#hand .tile.playable:hover{transform:none}.stone-drag-ghost{transform:translate(-50%,-50%)}.physical-flight{display:none}}
+
+/* A malha 3D ocupa a mesma área das pedras interativas. O SVG permanece como alternativa. */
+.real-3d {position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.real-board-active > svg {z-index:2;pointer-events:none;}
+.real-board-active > svg .stone-surface {opacity:0!important;}
+.real-rack-active {position:relative;isolation:isolate;}
+.real-rack-active > .tile {z-index:2;}
+.real-rack-active > .tile > svg {opacity:0;}
+.real-rack-active .play-choice {z-index:3;}
+@media(prefers-reduced-motion:reduce){.real-3d{will-change:auto}}
 </style><header><b>▣ DOMINÓ <span class="gold">CLUBE</span></b><span class="badge">AMIGOS E ROBÔS</span></header><main><p id="network" class="status" role="status" aria-live="polite">Crie uma mesa ou entre pelo código de um amigo.</p><p id="error" class="error" role="alert"></p>
 <section id="inicio" class="active"><span class="gold">SUA TURMA. SUA MESA.</span><h1>Amigos de verdade.<br>A mesma mesa.</h1><p class="muted">Jogue online com 2, 3 ou 4 pessoas. Compartilhe o convite e espere seus amigos entrarem. Ou treine contra um robô em três níveis.</p><button onclick="go('criar')">＋ Criar mesa</button><button class="secondary" onclick="go('entrar')">Entrar na mesa</button><button class="secondary" onclick="$('botName').value=read('domino.friends.name','');go('robo')">🤖 Jogar com robô</button><div class="grid"><div class="card"><h3>Clássico</h3><p>Encaixe as pedras e esvazie sua mão.</p></div><div class="card"><h3>Ponta de 5</h3><p>Pontue com a soma das pontas em múltiplos de cinco.</p></div><div class="card"><h3>Fechado</h3><p>Sem compra: jogue ou passe a vez.</p></div></div><div class="notice">Mantenham o jogo aberto durante a partida. A mesa depende da conexão do dono. Nesta versão, as partidas são gratuitas.</div><div class="card fx-progress"><h3>Seus troféus e amigos</h3><div id="fxProgressHome"></div></div><div class="card"><h3>Seu histórico neste aparelho</h3><div id="history"></div><button id="clearHistoryBtn" class="secondary" onclick="clearHistory()">Excluir histórico</button><p id="historyFeedback" class="muted" role="status" aria-live="polite"></p></div></section>
 <section id="robo"><h2>Jogar com robô</h2><div class="card"><label>Seu nome<input id="botName" maxlength="32" autocomplete="nickname" placeholder="Como você quer ser chamado?"></label><div class="grid"><label>Modalidade<select id="botMode"><option>Clássico</option><option>Ponta de 5</option><option>Fechado</option></select></label><label>Nível do robô<select id="botDifficulty"><option value="easy">Fácil</option><option value="medium">Médio</option><option value="hard">Difícil</option></select></label></div><p class="bot-note">Você contra um robô, neste aparelho. Fácil: jogadas mais aleatórias. Médio: prioriza pontos e pedras altas. Difícil: avalia respostas possíveis e as informações públicas da mesa.</p><p class="muted">Mesmas regras da modalidade escolhida. Partida gratuita, sem convite. O treino não altera o ranking entre amigos.</p><button onclick="Bot.start()">Começar contra robô</button><button class="secondary" onclick="go('inicio')">Voltar</button></div></section>
@@ -643,7 +653,7 @@ body.match-mode :is(#partida,#tablePreview) .game-board::before {border-style:so
 //# sourceMappingURL=peerjs.min.js.map
 </script><script>
 'use strict';
-const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261019-physical-table';
+const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261019-solid-3d';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uuid=()=>crypto.randomUUID().replaceAll('-','');
 const RECONNECT_MS=120000;
@@ -852,7 +862,7 @@ function boardMarkup(input,width,height){
  const g=Array.isArray(input)?{chain:input}:input,chain=g.chain;
  if(!chain.length)return '<div class="board-empty"><b>DOMINÓ</b><span>AGUARDANDO A PRIMEIRA PEDRA</span></div>';
  const scene=g.spinner?spinnerScene(g,width,height):chainScene(chain,width,height);
- return `<svg viewBox="${scene.camera.join(' ')}" role="img" aria-label="${chain.length} pedras conectadas. Pontas ${openEnds(g).map(e=>e.value).join(', ')}" xmlns="http://www.w3.org/2000/svg">${scene.nodes.map(p=>`<g class="board-stone" data-stone="${stoneKey(p.t)}" transform="translate(${p.cx} ${p.cy}) rotate(${p.angle}) translate(-50 -25)"><g class="stone-surface">${stoneFace(p.t)}</g></g>`).join('')}${g.spinner?openEnds(g).map(e=>`<circle data-end="${e.side}" cx="${scene.ends[e.side].x}" cy="${scene.ends[e.side].y}" r="1" opacity="0"/>`).join(''):''}</svg>`;
+ return `<svg viewBox="${scene.camera.join(' ')}" role="img" aria-label="${chain.length} pedras conectadas. Pontas ${openEnds(g).map(e=>e.value).join(', ')}" xmlns="http://www.w3.org/2000/svg">${scene.nodes.map(p=>`<g class="board-stone" data-stone="${stoneKey(p.t)}" data-face="${p.t.join(',')}" transform="translate(${p.cx} ${p.cy}) rotate(${p.angle}) translate(-50 -25)"><g class="stone-surface">${stoneFace(p.t)}</g></g>`).join('')}${g.spinner?openEnds(g).map(e=>`<circle data-end="${e.side}" cx="${scene.ends[e.side].x}" cy="${scene.ends[e.side].y}" r="1" opacity="0"/>`).join(''):''}</svg>`;
 }
 
 // Anima somente a peça confirmada que acaba de entrar; os encaixes permanecem fixos.
@@ -1363,6 +1373,95 @@ Fx.init();
 /* Robô local: usa os mesmos validadores da mesa online. O nível Difícil recebe
  * somente a própria mão, contagens públicas, peças da mesa e passes observados.
  * Nenhuma decisão lê a face das pedras do adversário ou a ordem do estoque. */
+/* Renderizador 3D leve. Mantém o SVG e os botões como referência de encaixe e alternativa. */
+const RealDomino3D=(()=>{
+ const contexts=new Map();let frame=0;
+ const vertex=`attribute vec3 a_pos;attribute vec3 a_normal;uniform vec4 u_camera;uniform vec2 u_center;uniform float u_scale;uniform float u_angle;uniform float u_shadow;varying vec3 v_normal;varying vec2 v_local;varying vec3 v_world;
+ void main(){float c=cos(u_angle),s=sin(u_angle);mat2 r=mat2(c,s,-s,c);vec2 xy=r*a_pos.xy*u_scale+u_center;float h=a_pos.z*u_scale;
+ v_local=a_pos.xy;v_normal=vec3(r*a_normal.xy,a_normal.z);v_world=vec3(xy,h);
+ if(u_shadow<0.5)xy+=vec2(-.13,-.60)*h;
+ vec2 clip=(xy-u_camera.xy)/u_camera.zw*2.0-1.0;gl_Position=vec4(clip.x,-clip.y,u_shadow>0.5?.95:clamp(-h*.018-xy.y*.00006,-.85,.85),1.0);}`;
+ const fragment=`precision highp float;varying vec3 v_normal;varying vec2 v_local;varying vec3 v_world;uniform vec2 u_pips[12];uniform float u_count;uniform float u_shadow;uniform float u_angle;uniform vec3 u_tint;
+ float noise(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
+ void main(){
+ if(u_shadow>0.5){vec2 q=abs(v_local-vec2(2.5,5.0))-vec2(48.0,23.0);float d=length(max(q,0.0))+min(max(q.x,q.y),0.0)-6.0;float alpha=(1.0-smoothstep(-1.0,8.0,d))*.29+(1.0-smoothstep(-3.0,1.5,d))*.18;gl_FragColor=vec4(.015,.022,.012,alpha);return;}
+ vec3 n=normalize(v_normal);vec3 base=vec3(.91,.895,.842)*u_tint;float rough=.25;float ao=1.0;
+ if(n.z>.98){
+  float dist=1000.0;vec2 delta=vec2(0.0);for(int i=0;i<12;i++){if(float(i)<u_count){vec2 d=v_local-u_pips[i];if(length(d)<dist){dist=length(d);delta=d;}}}
+  if(dist<4.85){float c=cos(u_angle),s=sin(u_angle);vec2 slope=-delta*.105;n=normalize(vec3(mat2(c,s,-s,c)*slope,1.0));base=vec3(.018,.022,.016);rough=.12;ao=mix(.45,1.0,(1.0-smoothstep(2.0,4.8,dist)));}
+  else if(dist<5.35){base=vec3(.51,.48,.40);ao=.8;}
+  if(abs(v_local.x)<1.25&&abs(v_local.y)<20.0){base=vec3(.014,.018,.012);n=normalize(vec3(-.3,0.0,1.0));rough=.18;ao=.62;}
+ }
+ vec3 light=normalize(vec3(-.48,-.65,1.1)),eye=normalize(vec3(.05,-.38,1.4)),halfway=normalize(light+eye);
+ float diffuse=max(dot(n,light),0.0),spec=pow(max(dot(n,halfway),0.0),mix(95.0,24.0,rough));
+ float soft=pow(max(dot(n,normalize(vec3(.7,.1,1.4))),0.0),5.0);
+ vec3 color=base*(.47+.64*diffuse)*ao+vec3(1.0,.98,.92)*spec*(rough<.2?.46:.24)+vec3(.05,.055,.05)*soft;
+ color+=(noise(v_world.xy*2.0)-.5)*.006;
+ gl_FragColor=vec4(pow(max(color,vec3(0.0)),vec3(.88)),1.0);
+ }`;
+ function rounded(w,h,r){const points=[];for(const [cx,cy,start] of [[w-r,h-r,0],[-w+r,h-r,90],[-w+r,-h+r,180],[w-r,-h+r,270]])for(let k=0;k<10;k++){const a=(start+k*90/9)*Math.PI/180;points.push([cx+Math.cos(a)*r,cy+Math.sin(a)*r]);}return points;}
+ function makeMesh(){
+  const rings=[[48,23,6,0],[50,25,7,1.2],[50,25,7,5.4],[49,24,7,7],[47.5,22.5,6,8]],data=[];
+  const emit=(p,n)=>data.push(...p,...n),tri=(a,b,c,n)=>{emit(a,n);emit(b,n);emit(c,n)};
+  for(let j=0;j<rings.length-1;j++){
+   const a=rings[j],b=rings[j+1],pa=rounded(...a.slice(0,3)),pb=rounded(...b.slice(0,3));
+   for(let k=0;k<pa.length;k++){const q=(k+1)%pa.length,dx=pa[q][0]-pa[k][0],dy=pa[q][1]-pa[k][1],len=Math.hypot(dx,dy)||1,dz=b[3]-a[3],dr=((b[0]-a[0])+(b[1]-a[1]))/2;
+    const n=[dy/len*dz,-dx/len*dz,-dr],mag=Math.hypot(...n);for(let z=0;z<3;z++)n[z]/=mag;
+    const p0=[...pa[k],a[3]],p1=[...pa[q],a[3]],p2=[...pb[q],b[3]],p3=[...pb[k],b[3]];tri(p0,p1,p2,n);tri(p0,p2,p3,n);
+   }
+  }
+  const top=rounded(47.5,22.5,6);for(let i=0;i<top.length;i++)tri([0,0,8],[...top[i],8],[...top[(i+1)%top.length],8],[0,0,1]);
+  return new Float32Array(data);
+ }
+ const mesh=makeMesh(),shadow=new Float32Array([-65,-42,0,0,0,1,65,-42,0,0,0,1,65,42,0,0,0,1,-65,-42,0,0,0,1,65,42,0,0,0,1,-65,42,0,0,0,1]);
+ function shader(gl,type,source){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){const message=gl.getShaderInfoLog(s);gl.deleteShader(s);throw Error(message);}return s;}
+ function create(host){
+  let canvas=host.querySelector(':scope > canvas.real-3d');if(!canvas){canvas=document.createElement('canvas');canvas.className='real-3d';canvas.setAttribute('aria-hidden','true');host.appendChild(canvas);}
+  const gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false,depth:true,powerPreference:'low-power'});if(!gl){canvas.remove();return null;}
+  try{
+   const program=gl.createProgram(),vs=shader(gl,gl.VERTEX_SHADER,vertex),fs=shader(gl,gl.FRAGMENT_SHADER,fragment);gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program));gl.deleteShader(vs);gl.deleteShader(fs);
+   const uniforms={};for(const key of ['camera','center','scale','angle','shadow','tint','count','pips[0]'])uniforms[key]=gl.getUniformLocation(program,'u_'+key);
+   const buffers=[mesh,shadow].map(data=>{const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,data,gl.STATIC_DRAW);return {buffer:b,count:data.length/6};});
+   const state={host,canvas,gl,program,uniforms,buffers,position:gl.getAttribLocation(program,'a_pos'),normal:gl.getAttribLocation(program,'a_normal')};
+   canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();host.classList.remove('real-board-active','real-rack-active');contexts.delete(host);canvas.remove();});return state;
+  }catch(e){canvas.remove();console.warn('Visual 3D indisponível; pedras tradicionais mantidas.',e.message);return null;}
+ }
+ function pips(t){const out=new Float32Array(24);let i=0;for(let half=0;half<2;half++)for(const [x,y] of pipLocations[t[half]]){out[i++]=x+half*50-50;out[i++]=y-25;}return {data:out,count:i/2};}
+ function pieces(host,rack){
+  if(rack){const r=host.getBoundingClientRect();return [...host.querySelectorAll(':scope > .tile')].map(el=>{
+   const label=el.getAttribute('aria-label')||'',m=label.match(/Pedra (\d) e (\d)/);if(!m)return null;const q=el.getBoundingClientRect();if(!q.width||el.classList.contains('drag-source'))return null;
+   return {x:q.left+q.width/2-r.left,y:q.top+q.height/2-r.top+2,angle:Math.PI/2,scale:q.width/50*.94,t:[+m[1],+m[2]]};
+  }).filter(Boolean);}
+  return [...host.querySelectorAll('.board-stone')].map(el=>{
+   if(el.querySelector('.physical-hidden'))return null;
+   const value=el.getAttribute('data-face'),tr=el.getAttribute('transform')||'',m=tr.match(/translate\(([-\d.]+) ([-\d.]+)\) rotate\(([-\d.]+)\)/);if(!m||!value)return null;
+   return {x:+m[1],y:+m[2],angle:+m[3]*Math.PI/180,scale:1,t:value.split(',').map(Number)};
+  }).filter(Boolean);
+ }
+ function draw(host){
+  if(!host.isConnected||!host.clientWidth||!host.clientHeight)return;
+  const rack=host.id==='hand'||host.id==='largePreviewHand',svg=rack?null:host.querySelector(':scope > svg');if(!rack&&!svg)return;
+  let state=contexts.get(host);if(!state){state=create(host);if(!state)return;contexts.set(host,state);}else if(!state.canvas.isConnected){host.appendChild(state.canvas);}
+  const {gl,canvas,program,uniforms:u,buffers}=state,w=host.clientWidth,h=host.clientHeight,dpr=Math.min(devicePixelRatio||1,1.5,Math.sqrt(1600000/(w*h)));
+  if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}
+  gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.useProgram(program);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);
+  const camera=rack?[0,0,w,h]:svg.getAttribute('viewBox').split(/\s+/).map(Number);gl.uniform4fv(u.camera,camera);const chosen=getComputedStyle(document.documentElement).getPropertyValue('--stone').trim(),hex=chosen.match(/^#([0-9a-f]{6})$/i);const tint=hex?[0,2,4].map((n,i)=>parseInt(hex[1].slice(n,n+2),16)/[245,243,235][i]):[1,1,1];gl.uniform3fv(u.tint,tint);
+  const list=pieces(host,rack);
+  for(let pass=0;pass<2;pass++){
+   const buffer=buffers[pass===0?1:0];gl.bindBuffer(gl.ARRAY_BUFFER,buffer.buffer);gl.enableVertexAttribArray(state.position);gl.enableVertexAttribArray(state.normal);gl.vertexAttribPointer(state.position,3,gl.FLOAT,false,24,0);gl.vertexAttribPointer(state.normal,3,gl.FLOAT,false,24,12);gl.uniform1f(u.shadow,pass===0?1:0);gl.depthMask(pass!==0);
+   for(const p of list){gl.uniform2f(u.center,p.x,p.y);gl.uniform1f(u.angle,p.angle);gl.uniform1f(u.scale,p.scale);if(pass===1){const pip=pips(p.t);gl.uniform1f(u.count,pip.count);gl.uniform2fv(u['pips[0]'],pip.data);}gl.drawArrays(gl.TRIANGLES,0,buffer.count);}
+  }
+  gl.depthMask(true);const marker=rack?'real-rack-active':'real-board-active';if(!host.classList.contains(marker))host.classList.add(marker);
+ }
+ const hosts=['board','largePreviewBoard','hand','largePreviewHand'];
+ function refresh(){frame=0;for(const id of hosts){const host=$(id);if(host)try{draw(host)}catch(e){host.classList.remove('real-board-active','real-rack-active');console.warn('Visual 3D: alternativa ativada.',e.message);}}}
+ function schedule(){if(!frame)frame=requestAnimationFrame(refresh);}
+ function init(){for(const id of hosts){const host=$(id);if(!host)continue;new MutationObserver(records=>{if(records.some(r=>r.type==='childList'&&[...r.addedNodes,...r.removedNodes].some(n=>n.nodeType===1&&!n.classList?.contains('real-3d'))||r.type==='attributes'&&(!r.target.classList?.contains('real-3d'))))schedule();}).observe(host,{subtree:true,childList:true,attributes:true,attributeFilter:['viewBox','class']});}
+  new MutationObserver(schedule).observe(document.documentElement,{attributes:true,attributeFilter:['style']});window.addEventListener('resize',schedule);document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule()});schedule();}
+ return {init,schedule,draw,meshVertices:mesh.length/6};
+})();
+RealDomino3D.init();
+
 const Bot=(()=>{
  const LEVELS={easy:'Fácil',medium:'Médio',hard:'Difícil'};
  let timer=null,observedGame=null,lastAction=0,voids=[new Set(),new Set()];
