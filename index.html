@@ -359,11 +359,12 @@ body.match-mode :is(#partida,#tablePreview) .game-rack .tile svg { width: 42px; 
 /* Acabamento acetinado e movimento curto: sem animação contínua durante a partida. */
 .board-stone { filter: drop-shadow(0 2px 1.5px #002d3060); }
 .stone-surface { transform-box: fill-box; transform-origin: center; }
-.stone-surface.stone-enter { animation: stone-seat 380ms cubic-bezier(.2,.75,.25,1) both; }
+.stone-surface.stone-enter { animation: stone-seat 340ms cubic-bezier(.18,.72,.26,1) both; }
 @keyframes stone-seat {
- 0% { opacity: .35; transform: translateY(-17px) scale(1.12); }
- 65% { opacity: 1; transform: translateY(1.5px) scale(.985); }
- 100% { opacity: 1; transform: translateY(0) scale(1); }
+ 0% { opacity: .65; transform: translate(-13px,-7px) rotate(-2deg) scale(1.035); }
+ 68% { opacity: 1; transform: translate(1px,.7px) rotate(.35deg) scale(.995); }
+ 84% { transform: translate(-.5px,0) rotate(-.15deg) scale(1); }
+ 100% { opacity: 1; transform: translate(0,0) rotate(0) scale(1); }
 }
 .tile svg { filter: drop-shadow(0 2px 1px #001d2b50); }
 #hand .tile { transition: transform 150ms ease, opacity 150ms ease; }
@@ -580,7 +581,7 @@ body.match-mode #hand .tile.playable:focus-visible { outline:3px solid #f3e2a1;o
 <section id="convite" aria-label="Entrada na mesa"><h2>Entre na mesa</h2><div class="card lobby-overview"><div id="roomSummary"></div><div id="seats" aria-label="Quem está na mesa"></div></div><div class="card lobby-actions"><p id="lobbyBrief" class="lobby-brief"></p><button id="readyBtn" onclick="requestReady()">Entrar e ficar pronto</button><button id="startBtn" onclick="sendAction({type:'start'})" hidden>Iniciar partida</button><p id="lobbyStatus" role="status" aria-live="polite"></p><p id="lobbyFeedback" role="alert"></p><button id="lobbyReload" class="secondary" onclick="reloadLobby()" hidden>Atualizar e voltar à mesa</button><details class="lobby-rules"><summary>Ver regras completas</summary><p id="rules"></p></details></div><div class="card" id="inviteControls" hidden><label>Link da mesa<input id="inviteLink" readonly onclick="this.select()"></label><button onclick="share()">Convidar amigo pelo WhatsApp</button><button class="secondary" onclick="copyInvite()">Copiar link</button></div></section>
 <section id="partida" class="immersive-table" aria-label="Mesa de dominó"><div class="match-toolbar"><div><span class="match-eyebrow">DOMINÓ CLUBE · ENTRE AMIGOS</span><h2 id="gameTitle">Partida</h2></div><span class="table-stake" aria-label="Aposta desta mesa: sem aposta">Sem aposta</span><div class="match-tools"><button onclick="fullscreenMatch()" aria-label="Ativar tela cheia">⛶</button><button class="sound-button" id="soundToggle" onclick="toggleSound()" aria-label="Ativar ou desativar som" aria-pressed="true">Som</button><button class="fx-open" onclick="Fx.openPanel()" aria-label="Efeitos e reações">✦</button><button onclick="leaveGame()">Sair</button></div></div><div class="scoreboard" id="scoreboard" aria-label="Placar da rodada"></div><div class="arena" id="arena"><div id="board" class="table game-board" aria-label="Pedras na mesa"></div><div class="stock-pile" id="stockPile" aria-label="Pedras disponíveis para compra"><i aria-hidden="true"></i><span>ESTOQUE <strong>14</strong></span></div><div id="opponents" class="card" aria-label="Jogadores e peças restantes"></div></div><div class="turn-strip"><p id="gameStatus" class="status" role="status" aria-live="polite"></p><span id="turnTimer" class="turn-clock" role="timer" aria-live="off">25s</span><small id="stock"></small></div><div class="hand-dock"><div class="hand-controls"><span class="hand-label">SUAS PEDRAS <strong id="handTotal">7</strong></span><span class="drag-hint">Arraste até a ponta</span><button id="draw" class="buy-button" onclick="sendAction({type:'draw'})">Comprar / passar</button></div><div id="handOptions" class="hand-options" role="status" aria-live="polite"></div><div id="hand" class="hand game-rack" aria-label="Sua mão de dominó"></div></div></section>
 <section id="resultado"><h2 id="resultTitle">Resultado da rodada</h2><div id="fxReveal" class="fx-reveal" role="status" aria-live="polite" hidden></div><div class="card" id="result"></div><button onclick="sendAction({type:'rematch'})" id="rematchBtn" hidden>Jogar novamente</button><p id="rematchStatus" class="muted" role="status"></p><div id="fxResultActions" hidden><button id="fxRematch" onclick="Fx.rematch()">Revanche</button><button class="secondary" onclick="Fx.shareResult()">Compartilhar resultado no WhatsApp</button><button class="secondary" onclick="Fx.openPanel()">Reações</button><p id="fxSocialStatus" class="fx-social-note" role="status"></p><details class="card fx-progress"><summary>Troféus e ranking entre amigos</summary><div id="fxProgressResult"></div></details></div><button class="secondary" onclick="go('inicio')">Início</button></section>
-<section id="ajustes"><h2>Seu estilo de jogo</h2><div class="card"><h3>Som, vibração e emoção</h3><button onclick="Fx.openPanel()">Efeitos e reações</button><button class="secondary" id="fxVibrationSetting" onclick="Fx.toggleVibration()" aria-pressed="true">Vibração ligada</button><p class="muted">Reações prontas, som de celebração na batida e demonstrações de vitória, carroça e jogo trancado.</p></div><div class="card"><h3>Aparência das pedras</h3><div id="stoneSamples" aria-label="Amostra das pedras"></div><h3 style="margin-top:22px">Prévia visual da mesa</h3><label>Jogadores na prévia<select id="previewCount" onchange="renderSequenceSample()"><option value="2">2 jogadores</option><option value="3">3 jogadores</option><option value="4">4 jogadores</option></select></label><label>Pedras na mão da prévia<select id="previewHandCount"><option value="7">7 pedras</option><option value="14">14 pedras</option><option value="21">21 pedras</option></select></label><button onclick="openTablePreview()">Ver tabuleiro em tela inteira</button><small>Dados ilustrativos para conferir o visual e o aviso de passe.</small><p class="table-stake" style="width:max-content">Sem aposta</p><div class="scoreboard" id="previewScoreboard"></div><div class="arena preview-arena" id="previewArena"><div class="sequence-sample" id="chainSample" aria-label="Prévia visual da sequência de dominó"></div><div class="preview-seats" id="previewPlayers"></div></div><p class="muted">Pedras brancas na mão e na mesa, com relevo acetinado e encaixe animado.</p><label>Pedras<select onchange="document.documentElement.style.setProperty('--stone',this.value)"><option value="#f5f3eb">Branco clássico</option><option value="#bfe1ed">Azul gelo</option><option value="#dfd0a6">Areia</option></select></label><label>Mesa<select onchange="document.getElementById('board').style.background=this.value"><option value="#087e80">Verde-petróleo</option><option value="#203c55">Azul noite</option><option value="#493349">Bordô</option></select></label><div class="sound-setting"><button class="secondary" onclick="testStoneSound()">Testar som da pedra</button><button class="secondary" onclick="toggleSound()" id="soundSettingToggle">Som ligado</button><small id="soundSettingStatus" role="status">Som seco de pedra batendo na mesa. Pode ser desligado durante a partida.</small></div></div></section>
+<section id="ajustes"><h2>Seu estilo de jogo</h2><div class="card"><h3>Som, vibração e emoção</h3><button onclick="Fx.openPanel()">Efeitos e reações</button><button class="secondary" id="fxVibrationSetting" onclick="Fx.toggleVibration()" aria-pressed="true">Vibração ligada</button><p class="muted">Reações prontas, som de celebração na batida e demonstrações de vitória, carroça e jogo trancado.</p></div><div class="card"><h3>Aparência das pedras</h3><div id="stoneSamples" aria-label="Amostra das pedras"></div><h3 style="margin-top:22px">Prévia visual da mesa</h3><label>Jogadores na prévia<select id="previewCount" onchange="renderSequenceSample()"><option value="2">2 jogadores</option><option value="3">3 jogadores</option><option value="4">4 jogadores</option></select></label><label>Pedras na mão da prévia<select id="previewHandCount"><option value="7">7 pedras</option><option value="14">14 pedras</option><option value="21">21 pedras</option></select></label><button onclick="openTablePreview()">Ver tabuleiro em tela inteira</button><small>Dados ilustrativos para conferir o visual e o aviso de passe.</small><p class="table-stake" style="width:max-content">Sem aposta</p><div class="scoreboard" id="previewScoreboard"></div><div class="arena preview-arena" id="previewArena"><div class="sequence-sample" id="chainSample" aria-label="Prévia visual da sequência de dominó"></div><div class="preview-seats" id="previewPlayers"></div></div><p class="muted">Pedras brancas na mão e na mesa, com relevo acetinado e encaixe animado.</p><label>Pedras<select onchange="document.documentElement.style.setProperty('--stone',this.value)"><option value="#f5f3eb">Branco clássico</option><option value="#bfe1ed">Azul gelo</option><option value="#dfd0a6">Areia</option></select></label><label>Mesa<select onchange="document.getElementById('board').style.background=this.value"><option value="#087e80">Verde-petróleo</option><option value="#203c55">Azul noite</option><option value="#493349">Bordô</option></select></label><div class="sound-setting"><button class="secondary" onclick="testStoneSound()">Testar som da pedra</button><button class="secondary" onclick="testDrawSound()">Testar som da compra</button><button class="secondary" onclick="toggleSound()" id="soundSettingToggle">Som ligado</button><small id="soundSettingStatus" role="status">Impactos de resina, som de compra e celebração curta. Sem música de fundo. Pode ser desligado durante a partida.</small></div></div></section>
 <section id="tablePreview" class="immersive-table" aria-label="Prévia ilustrativa do tabuleiro ampliado"><div class="match-toolbar"><div><h2>Prévia · sem aposta</h2></div><div class="match-tools"><button onclick="renderLargePreview()" aria-label="Rever animação de encaixe">Rever efeito</button><button onclick="Fx.openPanel()">Efeitos</button><button onclick="go('ajustes')" aria-label="Fechar prévia">Voltar</button></div></div><div id="largePreviewScore" class="scoreboard"></div><div class="arena"><div id="largePreviewBoard" class="game-board"></div><div class="stock-pile" aria-label="Prévia do estoque"><i aria-hidden="true"></i><span>ESTOQUE <strong>14</strong></span></div><div id="largePreviewPlayers" class="preview-seats"></div></div><div class="turn-strip"><p>Prévia ilustrativa · arraste suas pedras durante a partida.</p><span class="turn-clock" aria-label="Exemplo de tempo por jogada: 25 segundos">25s</span><small>Estoque 14 · Mão 6</small></div><div class="hand-dock"><div class="hand-controls"><span class="hand-label">SUAS PEDRAS</span><button class="preview-points" onclick="showPointsToast(10,'Você')">+10 pontos</button><button class="preview-points" onclick="showPassToast('Amigo 1')">Ver passe</button><button class="preview-points" onclick="animateDraw(1,true)">Ver compra</button><button class="buy-button" disabled aria-label="Prévia do botão Comprar pedra">Comprar pedra</button></div><div id="previewHandOptions" class="hand-options"></div><div id="largePreviewHand" class="hand game-rack"></div></div></section>
 <section id="carteira"><h2>Partidas gratuitas</h2><div class="card"><p>Apostas, Pix, saldo e saques não estão ativos nesta versão.</p></div></section>
 </main><nav><button onclick="go('inicio')">Início</button><button onclick="go('criar')">Criar mesa</button><button onclick="go('entrar')">Entrar</button><button onclick="openCurrent()">Minha mesa</button><button onclick="go('ajustes')">Ajustes</button></nav><footer>Entre amigos • gratuito • mantenha esta página aberta durante a partida.</footer>
@@ -602,7 +603,7 @@ body.match-mode #hand .tile.playable:focus-visible { outline:3px solid #f3e2a1;o
 //# sourceMappingURL=peerjs.min.js.map
 </script><script>
 'use strict';
-const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261019-ivory-realistic';
+const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261019-table-sound';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uuid=()=>crypto.randomUUID().replaceAll('-','');
 const RECONNECT_MS=120000;
@@ -938,8 +939,61 @@ function renderPlayers(r,g,self,preview=false){const arenaId=preview?'previewAre
 let soundEnabled=read('domino.friends.sound',true),stoneAudio=null,stoneBuffer=null;
 function syncSoundButtons(){const b=$('soundToggle');if(b){b.setAttribute('aria-pressed',String(soundEnabled));b.textContent=soundEnabled?'Som ✓':'Som ×'}const setting=$('soundSettingToggle');if(setting)setting.textContent=soundEnabled?'Som ligado':'Som desligado'}
 async function unlockSound(){if(!soundEnabled)return null;try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;if(!stoneAudio)stoneAudio=new C();if(stoneAudio.state==='suspended')await stoneAudio.resume();return stoneAudio}catch{return null}}
-function buildStoneBuffer(ctx){const buffer=ctx.createBuffer(1,Math.ceil(ctx.sampleRate*.13),ctx.sampleRate),data=buffer.getChannelData(0);for(let i=0;i<data.length;i++){const t=i/ctx.sampleRate,noise=Math.random()*2-1,hit=Math.exp(-t/.005),second=t>=.022?Math.exp(-(t-.022)/.007)*.58:0,body=Math.sin(2*Math.PI*610*t)*Math.exp(-t/.019)*.2,ring=Math.sin(2*Math.PI*1870*t)*Math.exp(-t/.012)*.12;data[i]=Math.max(-1,Math.min(1,noise*(hit+second)*.65+body+ring))}return buffer}
-function playStoneSound(strength=1){if(!soundEnabled||!stoneAudio||stoneAudio.state!=='running')return;try{if(!stoneBuffer)stoneBuffer=buildStoneBuffer(stoneAudio);const src=stoneAudio.createBufferSource(),gain=stoneAudio.createGain(),filter=stoneAudio.createBiquadFilter();src.buffer=stoneBuffer;gain.gain.value=Math.min(.98,.88*Math.max(.6,strength));filter.type='lowpass';filter.frequency.value=5100;src.connect(filter);filter.connect(gain);gain.connect(stoneAudio.destination);src.start();src.onended=()=>{src.disconnect();filter.disconnect();gain.disconnect()}}catch{}}
+// Impactos sintetizados com ressonâncias curtas de resina e contato amortecido pelo feltro.
+// Quatro variantes em cache evitam repetição mecânica e dispensam downloads de áudio.
+const stoneSoundVariants=[],drawSoundVariants=[];let lastStoneVariant=-1;
+function buildStoneBuffer(ctx,variant=0,draw=false){
+ const duration=draw?.24:.19,buffer=ctx.createBuffer(1,Math.ceil(ctx.sampleRate*duration),ctx.sampleRate),data=buffer.getChannelData(0);
+ const detune=1+(variant-1.5)*.018,modes=[[560,.15,.021],[1240,.11,.016],[2430,.075,.010],[3870,.04,.006]];
+ let smooth=0,peak=0;
+ for(let i=0;i<data.length;i++){
+  const t=i/ctx.sampleRate,noise=Math.random()*2-1;smooth+=.24*(noise-smooth);
+  let v=0;
+  if(draw){
+   // Deslizamento seco e duas pequenas colisões de pedras no estoque.
+   const envelope=Math.sin(Math.PI*Math.min(1,t/duration))**1.2;
+   v=(noise-smooth)*.13*envelope;
+   for(const at of [.025,.14])if(t>=at){const dt=t-at;v+=(noise*.21+Math.sin(2*Math.PI*1700*dt)*.09)*Math.exp(-dt/.006);}
+  }else{
+   const attack=Math.min(1,t/.0007),hit=Math.exp(-t/.0028),settle=t>.014?Math.exp(-(t-.014)/.004)*.22:0;
+   v=attack*((noise-smooth)*(.62*hit+settle)+smooth*.36*Math.exp(-t/.009));
+   for(const [hz,amplitude,decay] of modes)v+=Math.sin(2*Math.PI*hz*detune*t)*amplitude*Math.exp(-t/decay)*attack;
+   v+=Math.sin(2*Math.PI*145*t)*.13*Math.exp(-t/.014)*attack;
+  }
+  data[i]=v;peak=Math.max(peak,Math.abs(v));
+ }
+ const level=draw?.45:.91;
+ for(let i=0;i<data.length;i++)data[i]*=level/Math.max(.01,peak);
+ return buffer;
+}
+function playTableSound(kind='place',strength=1){
+ if(!soundEnabled||document.hidden||!stoneAudio||stoneAudio.state!=='running')return false;
+ try{
+  const draw=kind==='draw',cache=draw?drawSoundVariants:stoneSoundVariants;
+  let variant=Math.floor(Math.random()*4);if(!draw&&variant===lastStoneVariant)variant=(variant+1)%4;if(!draw)lastStoneVariant=variant;
+  cache[variant]??=buildStoneBuffer(stoneAudio,variant,draw);
+  const src=stoneAudio.createBufferSource(),gain=stoneAudio.createGain();src.buffer=cache[variant];
+  src.playbackRate.value=draw?1:strength>1? .94:1;
+  gain.gain.value=draw?.68:Math.min(1,.9*Math.max(.6,strength));
+  src.connect(gain);gain.connect(stoneAudio.destination);src.start();src.onended=()=>{src.disconnect();gain.disconnect()};return true;
+ }catch{return false;}
+}
+function playStoneSound(strength=1){return playTableSound('place',strength);}
+let winAccentBuffer=null;
+function playWinAccent(ctx,voices){
+ if(!soundEnabled||document.hidden)return;
+ if(!winAccentBuffer){
+  winAccentBuffer=ctx.createBuffer(1,Math.ceil(ctx.sampleRate*.95),ctx.sampleRate);const data=winAccentBuffer.getChannelData(0);
+  const hits=[0,.047,.13,.19,.28,.36,.49,.6,.73];let smooth=0;
+  for(let i=0;i<data.length;i++){const t=i/ctx.sampleRate,n=Math.random()*2-1;smooth+=.12*(n-smooth);let env=0;
+   for(const at of hits){const dt=t-at;if(dt>=0&&dt<.12)env+=Math.min(1,dt/.001)*Math.exp(-dt/.018);}
+   data[i]=(n-smooth)*env*.12;
+  }
+ }
+ const osc=ctx.createBufferSource(),gain=ctx.createGain();osc.buffer=winAccentBuffer;gain.gain.value=.7;osc.connect(gain);gain.connect(ctx.destination);
+ const voice={osc,gain};voices.add(voice);osc.onended=()=>{osc.disconnect();gain.disconnect();voices.delete(voice)};osc.start();
+}
+async function testDrawSound(){const ctx=await unlockSound();if(ctx?.state==='running'&&soundEnabled){playTableSound('draw');$('soundSettingStatus').textContent='Som da compra reproduzido.';}else $('soundSettingStatus').textContent='Ative o som e toque novamente para ouvir.';}
 let scorePopupTimer=null,scorePopupQueue=[],scorePopupGame=null;
 function showPointsToast(points,name){
  scorePopupQueue.push({points,name});if(scorePopupTimer===null)nextScoreToast();
@@ -987,7 +1041,14 @@ function showActionEffects(before,next){
  if(a.type==='draw')animateDraw(a.player);
  if(a.type==='place'&&next.game.counts[a.player]===1){const chip=$('opponents').querySelector('[data-player="'+a.player+'"]');chip?.classList.add('one-left');visualLater(()=>chip?.classList.remove('one-left'),1800);}
 }
-function playConfirmedSound(before,next){const a=next.game?.lastAction,old=before?.game;if(!a||a.type!=='place'||!old||old.id!==next.game.id||old.paused||a.id<=(old.lastAction?.id||0))return;const important=next.game.counts[a.player]===0||next.game.points[a.player]-(old.points[a.player]||0)>=10||a.tile?.every(n=>n===6);playStoneSound(important?1.4:1)}
+function playConfirmedSound(before,next){
+ const a=next.game?.lastAction,old=before?.game;
+ if(!a||!old||old.id!==next.game.id||old.paused||a.id<=(old.lastAction?.id||0))return;
+ if(a.type==='draw'){playTableSound('draw');return;}
+ if(a.type!=='place')return;
+ const important=next.game.counts[a.player]===0||next.game.points[a.player]-(old.points[a.player]||0)>=10||a.tile?.every(n=>n===6);
+ playStoneSound(important?1.4:1);
+}
 function toggleSound(){soundEnabled=!soundEnabled;save('domino.friends.sound',soundEnabled);syncSoundButtons();if(soundEnabled)unlockSound();$('soundSettingStatus').textContent=soundEnabled?'Som ativado.':'Som desativado.'}
 async function testStoneSound(){soundEnabled=true;save('domino.friends.sound',true);syncSoundButtons();const ctx=await unlockSound();if(!ctx||ctx.state!=='running'){$('soundSettingStatus').textContent='Toque novamente para ativar o áudio do navegador.';return}playStoneSound();$('soundSettingStatus').textContent='Som da pedra reproduzido.'}
 window.addEventListener('pointerdown',()=>{if(soundEnabled)unlockSound()},{passive:true});
@@ -1060,7 +1121,7 @@ const Fx=(()=>{
  async function celebration(){
   if(!soundEnabled||document.hidden)return false;
   const ctx=await unlockSound();if(!ctx||ctx.state!=='running'||!soundEnabled||document.hidden)return false;
-  stopCelebration();const start=ctx.currentTime+.025;
+  stopCelebration();playWinAccent(ctx,celebrationVoices);const start=ctx.currentTime+.025;
   const notes=[[523.25,0,.20,.07],[659.25,.11,.20,.07],[783.99,.22,.22,.075],[1046.5,.36,.40,.08],[1318.5,.57,.36,.05],[783.99,.78,.52,.045],[1046.5,.78,.55,.05],[1567.98,.78,.48,.025]];
   for(const [freq,delay,duration,volume] of notes){const osc=ctx.createOscillator(),gain=ctx.createGain(),at=start+delay;osc.type='triangle';osc.frequency.value=freq;gain.gain.setValueAtTime(.0001,at);gain.gain.exponentialRampToValueAtTime(volume,at+.012);gain.gain.exponentialRampToValueAtTime(.0001,at+duration);osc.connect(gain);gain.connect(ctx.destination);const voice={osc,gain};celebrationVoices.add(voice);osc.onended=()=>{osc.disconnect();gain.disconnect();celebrationVoices.delete(voice)};osc.start(at);osc.stop(at+duration+.03);}
   return true;
