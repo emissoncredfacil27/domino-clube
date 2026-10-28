@@ -628,12 +628,13 @@ body.match-mode :is(#partida,#tablePreview) .real-rack-active.game-rack .tile.pl
 .easy-entry{max-width:540px;margin-inline:auto}.join-help{font-size:clamp(20px,5vw,25px);line-height:1.5;color:var(--text,#eef7f2)}
 #joinBtn{display:block;width:100%;min-height:74px;font-size:24px;border-radius:18px;margin:20px 0 12px;font-weight:800}
 #joinProgress{font-size:19px;line-height:1.5;min-height:1.5em}.join-free{font-size:17px;line-height:1.5}.join-name{margin-top:24px}.join-name summary{min-height:44px;font-size:17px;cursor:pointer}.join-name label{margin-top:12px}
+.family-access #joinBtn{min-height:150px;display:flex;align-items:center;justify-content:center;gap:24px;font-size:32px}.family-play-icon{display:grid;place-items:center;width:76px;height:76px;border-radius:50%;background:#143d31;color:#fff;font-size:42px}.family-access .join-name{display:none}.family-access #entrar .join-free{display:none}.family-access #entrar{padding-top:30px}.family-access #joinProgress{font-size:21px;min-height:3em}.family-access #joinBtn:disabled{opacity:.8}#familyInviteControls{margin-top:24px}#familyInviteControls p{line-height:1.5}
 </style><header><b>▣ DOMINÓ <span class="gold">CLUBE</span></b><span class="badge">AMIGOS E ROBÔS</span></header><main><p id="network" class="status" role="status" aria-live="polite">Crie uma mesa ou entre pelo código de um amigo.</p><p id="error" class="error" role="alert"></p>
 <section id="inicio" class="active"><span class="gold">SUA TURMA. SUA MESA.</span><h1>Amigos de verdade.<br>A mesma mesa.</h1><p class="muted">Jogue online com 2, 3 ou 4 pessoas. Compartilhe o convite e espere seus amigos entrarem. Ou treine contra um robô em três níveis.</p><button onclick="go('criar')">＋ Criar mesa</button><button class="secondary" onclick="go('entrar')">Entrar na mesa</button><button class="secondary" onclick="$('botName').value=read('domino.friends.name','');go('robo')">🤖 Jogar com robô</button><div class="grid"><div class="card"><h3>Clássico</h3><p>Encaixe as pedras e esvazie sua mão.</p></div><div class="card"><h3>Ponta de 5</h3><p>Pontue com a soma das pontas em múltiplos de cinco.</p></div><div class="card"><h3>Fechado</h3><p>Sem compra: jogue ou passe a vez.</p></div></div><div class="notice">Mantenham o jogo aberto durante a partida. A mesa depende da conexão do dono. Nesta versão, as partidas são gratuitas.</div><div class="card fx-progress"><h3>Seus troféus e amigos</h3><div id="fxProgressHome"></div></div><div class="card"><h3>Seu histórico neste aparelho</h3><div id="history"></div><button id="clearHistoryBtn" class="secondary" onclick="clearHistory()">Excluir histórico</button><p id="historyFeedback" class="muted" role="status" aria-live="polite"></p></div></section>
 <section id="robo"><h2>Jogar com robô</h2><div class="card"><label>Seu nome<input id="botName" maxlength="32" autocomplete="nickname" placeholder="Como você quer ser chamado?"></label><div class="grid"><label>Modalidade<select id="botMode"><option>Clássico</option><option>Ponta de 5</option><option>Fechado</option></select></label><label>Nível do robô<select id="botDifficulty"><option value="easy">Fácil</option><option value="medium">Médio</option><option value="hard">Difícil</option></select></label></div><p class="bot-note">Você contra um robô, neste aparelho. Fácil: jogadas mais aleatórias. Médio: prioriza pontos e pedras altas. Difícil: avalia respostas possíveis e as informações públicas da mesa.</p><p class="muted">Mesmas regras da modalidade escolhida. Partida gratuita, sem convite. O treino não altera o ranking entre amigos.</p><button onclick="Bot.start()">Começar contra robô</button><button class="secondary" onclick="go('inicio')">Voltar</button></div></section>
 <section id="criar"><h2>Monte sua mesa</h2><div class="card"><label>Seu nome<input id="nome" maxlength="32" autocomplete="nickname" placeholder="Como seus amigos te chamam?"></label><div class="grid"><label>Modalidade<select id="modo"><option>Clássico</option><option>Ponta de 5</option><option>Fechado</option></select></label><label>Participantes<select id="qtd"><option value="2">2 jogadores</option><option value="3">3 jogadores • individual</option><option value="4">4 jogadores • individual</option></select></label></div><p>Sem aposta • entrada gratuita</p><button onclick="createRoom()" id="createBtn">Criar mesa online</button></div></section>
-<section id="entrar" aria-label="Entrar para jogar"><h2 id="joinHeading">Jogue com seu amigo</h2><div class="card easy-entry"><p id="joinHelp" class="join-help">Recebeu um convite? É só tocar no botão abaixo.</p><label id="joinCodeLabel">Código da mesa<input id="code" maxlength="12" autocapitalize="none" spellcheck="false" placeholder="Cole o código recebido"></label><p class="join-free">Partida gratuita. Seu amigo inicia quando todos chegarem.</p><button onclick="joinRoom()" id="joinBtn">Entrar para jogar</button><p id="joinProgress" role="status" aria-live="polite"></p><details class="join-name"><summary>Colocar meu nome (opcional)</summary><label>Seu nome<input id="guestName" maxlength="32" autocomplete="nickname" placeholder="Se preferir, deixe em branco"></label></details></div></section>
-<section id="convite" aria-label="Entrada na mesa"><h2>Entre na mesa</h2><div class="card lobby-overview"><div id="roomSummary"></div><div id="seats" aria-label="Quem está na mesa"></div></div><div class="card lobby-actions"><p id="lobbyBrief" class="lobby-brief"></p><button id="readyBtn" onclick="requestReady()">Entrar e ficar pronto</button><button id="startBtn" onclick="sendAction({type:'start'})" hidden>Iniciar partida</button><p id="lobbyStatus" role="status" aria-live="polite"></p><p id="lobbyFeedback" role="alert"></p><button id="reconnectBtn" class="secondary" onclick="reconnectRoom()" hidden>Reconectar mesa</button><button id="lobbyReload" class="secondary" onclick="reloadLobby()" hidden>Atualizar e voltar à mesa</button><details class="lobby-rules"><summary>Ver regras completas</summary><p id="rules"></p></details></div><div class="card" id="inviteControls" hidden><label>Link da mesa<input id="inviteLink" readonly onclick="this.select()"></label><button onclick="share()">Convidar amigo pelo WhatsApp</button><button class="secondary" onclick="copyInvite()">Copiar link</button></div></section>
+<section id="entrar" aria-label="Entrar para jogar"><h2 id="joinHeading">Jogue com seu amigo</h2><div class="card easy-entry"><p id="joinHelp" class="join-help">Recebeu um convite? É só tocar no botão abaixo.</p><label id="joinCodeLabel">Código da mesa<input id="code" maxlength="24" autocapitalize="none" spellcheck="false" placeholder="Cole o código recebido"></label><p class="join-free">Partida gratuita. Seu amigo inicia quando todos chegarem.</p><button onclick="joinRoom()" id="joinBtn">Entrar para jogar</button><p id="joinProgress" role="status" aria-live="polite"></p><details class="join-name"><summary>Colocar meu nome (opcional)</summary><label>Seu nome<input id="guestName" maxlength="32" autocomplete="nickname" placeholder="Se preferir, deixe em branco"></label></details></div></section>
+<section id="convite" aria-label="Entrada na mesa"><h2>Entre na mesa</h2><div class="card lobby-overview"><div id="roomSummary"></div><div id="seats" aria-label="Quem está na mesa"></div></div><div class="card lobby-actions"><p id="lobbyBrief" class="lobby-brief"></p><button id="readyBtn" onclick="requestReady()">Entrar e ficar pronto</button><button id="startBtn" onclick="sendAction({type:'start'})" hidden>Iniciar partida</button><p id="lobbyStatus" role="status" aria-live="polite"></p><p id="lobbyFeedback" role="alert"></p><button id="reconnectBtn" class="secondary" onclick="reconnectRoom()" hidden>Reconectar mesa</button><button id="lobbyReload" class="secondary" onclick="reloadLobby()" hidden>Atualizar e voltar à mesa</button><details class="lobby-rules"><summary>Ver regras completas</summary><p id="rules"></p></details></div><div class="card" id="inviteControls" hidden><label>Link da mesa<input id="inviteLink" readonly onclick="this.select()"></label><button onclick="share()">Convidar amigo pelo WhatsApp</button><button class="secondary" onclick="copyInvite()">Copiar link</button><div id="familyInviteControls" hidden><hr><p>Envie uma vez. Seu pai poderá usar o mesmo acesso nos próximos jogos.</p><button onclick="shareFamily()">Enviar acesso fixo para meu pai</button><button class="secondary" onclick="copyFamilyInvite()">Copiar acesso fixo</button></div></div></section>
 <section id="partida" class="immersive-table" aria-label="Mesa de dominó"><div class="match-toolbar"><div><span class="match-eyebrow">DOMINÓ CLUBE · ENTRE AMIGOS</span><h2 id="gameTitle">Partida</h2></div><span class="table-stake" aria-label="Aposta desta mesa: sem aposta">Sem aposta</span><div class="match-tools"><button onclick="fullscreenMatch()" aria-label="Ativar tela cheia">⛶</button><button class="sound-button" id="soundToggle" onclick="toggleSound()" aria-label="Ativar ou desativar som" aria-pressed="true">Som</button><button class="fx-open" onclick="Fx.openPanel()" aria-label="Efeitos e reações">✦</button><button onclick="leaveGame()">Sair</button></div></div><div class="scoreboard" id="scoreboard" aria-label="Placar da rodada"></div><div class="arena" id="arena"><div id="board" class="table game-board" aria-label="Pedras na mesa"></div><div class="stock-pile" id="stockPile" aria-label="Pedras disponíveis para compra"><i aria-hidden="true"></i><span>ESTOQUE <strong>14</strong></span></div><div id="opponents" class="card" aria-label="Jogadores e peças restantes"></div></div><div class="turn-strip"><p id="gameStatus" class="status" role="status" aria-live="polite"></p><span id="turnTimer" class="turn-clock" role="timer" aria-live="off">25s</span><small id="stock"></small></div><div class="hand-dock"><div class="hand-controls"><span class="hand-label">SUAS PEDRAS <strong id="handTotal">7</strong></span><span class="drag-hint">Arraste até a ponta</span><button id="draw" class="buy-button" onclick="sendAction({type:'draw'})">Comprar / passar</button></div><div id="handOptions" class="hand-options" role="status" aria-live="polite"></div><div id="hand" class="hand game-rack" aria-label="Sua mão de dominó"></div></div></section>
 <section id="resultado"><h2 id="resultTitle">Resultado da rodada</h2><div id="fxReveal" class="fx-reveal" role="status" aria-live="polite" hidden></div><div class="card" id="result"></div><button onclick="sendAction({type:'rematch'})" id="rematchBtn" hidden>Jogar novamente</button><p id="rematchStatus" class="muted" role="status"></p><div id="fxResultActions" hidden><button id="fxRematch" onclick="Fx.rematch()">Revanche</button><button class="secondary" onclick="Fx.shareResult()">Compartilhar resultado no WhatsApp</button><button class="secondary" onclick="Fx.openPanel()">Reações</button><p id="fxSocialStatus" class="fx-social-note" role="status"></p><details class="card fx-progress"><summary>Troféus e ranking entre amigos</summary><div id="fxProgressResult"></div></details></div><button class="secondary" onclick="go('inicio')">Início</button></section>
 <section id="ajustes"><h2>Seu estilo de jogo</h2><div class="card"><h3>Som, vibração e emoção</h3><button onclick="Fx.openPanel()">Efeitos e reações</button><button class="secondary" id="fxVibrationSetting" onclick="Fx.toggleVibration()" aria-pressed="true">Vibração ligada</button><p class="muted">Reações prontas, som de celebração na batida e demonstrações de vitória, carroça e jogo trancado.</p></div><div class="card"><h3>Aparência das pedras</h3><div id="stoneSamples" aria-label="Amostra das pedras"></div><h3 style="margin-top:22px">Prévia visual da mesa</h3><label>Jogadores na prévia<select id="previewCount" onchange="renderSequenceSample()"><option value="2">2 jogadores</option><option value="3">3 jogadores</option><option value="4">4 jogadores</option></select></label><label>Pedras na mão da prévia<select id="previewHandCount"><option value="7">7 pedras</option><option value="14">14 pedras</option><option value="21">21 pedras</option></select></label><button onclick="openTablePreview()">Ver tabuleiro em tela inteira</button><small>Dados ilustrativos para conferir o visual e o aviso de passe.</small><p class="table-stake" style="width:max-content">Sem aposta</p><div class="scoreboard" id="previewScoreboard"></div><div class="arena preview-arena" id="previewArena"><div class="sequence-sample" id="chainSample" aria-label="Prévia visual da sequência de dominó"></div><div class="preview-seats" id="previewPlayers"></div></div><p class="muted">Pedras brancas na mão e na mesa, com relevo acetinado e encaixe animado.</p><label>Pedras<select onchange="document.documentElement.style.setProperty('--stone',this.value)"><option value="#f5f3eb">Branco clássico</option><option value="#bfe1ed">Azul gelo</option><option value="#dfd0a6">Areia</option></select></label><label>Mesa<select onchange="document.getElementById('board').style.background=this.value"><option value="#087e80">Verde-petróleo</option><option value="#203c55">Azul noite</option><option value="#493349">Bordô</option></select></label><div class="sound-setting"><button class="secondary" onclick="testStoneSound()">Testar som da pedra</button><button class="secondary" onclick="testDrawSound()">Testar som da compra</button><button class="secondary" onclick="toggleSound()" id="soundSettingToggle">Som ligado</button><small id="soundSettingStatus" role="status">Impactos de resina, som de compra e celebração curta. Sem música de fundo. Pode ser desligado durante a partida.</small></div></div></section>
@@ -658,17 +659,70 @@ body.match-mode :is(#partida,#tablePreview) .real-rack-active.game-rack .tile.pl
 //# sourceMappingURL=peerjs.min.js.map
 </script><script>
 'use strict';
-const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261021-easy-entry-r1';
+const $=id=>document.getElementById(id), RULE_VERSION='friends-v5-rounds', APP_BUILD='20261028-family-https-r1';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uuid=()=>crypto.randomUUID().replaceAll('-','');
 const RECONNECT_MS=120000;
+// Preenchido com o endereço verificado do transporte HTTPS na publicação.
+const RELAY_URL='https://domino-clube-emisson.onrender.com';
+let familyAccess=false;
+// Compatibilidade com o transporte já usado pelo jogo. Cada canal mantém sua ordem.
+class RelayEvents {
+ constructor(){this.events=new Map()}
+ on(type,fn){const list=this.events.get(type)||[];list.push(fn);this.events.set(type,list);return this}
+ emit(type,data){for(const fn of this.events.get(type)||[])fn(data)}
+}
+class RelayConnection extends RelayEvents {
+ constructor(owner,id,peer,open=false){super();this.owner=owner;this.id=id;this.peer=peer;this.open=open;this.closed=false}
+ send(data){if(!this.open||this.closed)throw Error('Canal fechado');this.owner.send({kind:'data',channel:this.id,data})}
+ close(){if(this.closed)return;this.owner.send({kind:'close',channel:this.id});this.finish()}
+ finish(){if(this.closed)return;this.open=false;this.closed=true;this.owner.channels.delete(this.id);this.emit('close')}
+}
+class RelayPeer extends RelayEvents {
+ constructor(id,options={}){super();this.id=id;this.key=options.ownerKey||'';this.open=false;this.disconnected=false;this.destroyed=false;this.channels=new Map();this.session='';this.generation=0;this.outbound=Promise.resolve();this.register()}
+ async request(path,body={},signal,session=this.session){
+  const res=await fetch(RELAY_URL+path,{method:'POST',headers:{'Content-Type':'application/json',...(session?{Authorization:'Bearer '+session}:{})},body:JSON.stringify(body),cache:'no-store',signal});
+  if(!res.ok){const e=Error('Relay HTTP '+res.status);e.status=res.status;throw e;}
+  return res.json();
+ }
+ async register(){
+  const n=++this.generation;this.abort?.abort();this.abort=new AbortController();const signal=this.abort.signal;
+  this.disconnected=false;const deadline=setTimeout(()=>{if(n===this.generation)this.abort.abort()},70000);
+  try{
+   const r=await this.request('/relay/register',{id:this.id,key:this.key,resume:this.session},signal);
+   if(n!==this.generation||this.destroyed)return;
+   this.session=r.session;this.open=true;this.emit('open',this.id);this.poll(n,signal);
+  }catch(e){if(n!==this.generation||this.destroyed)return;this.open=false;this.disconnected=true;this.emit('error',{type:e.status===403?'invalid-id':'network'});this.emit('disconnected')}finally{clearTimeout(deadline)}
+ }
+ async poll(n,signal){
+  while(!this.destroyed&&n===this.generation&&this.open){
+   try{const r=await this.request('/relay/poll',{},signal);if(n!==this.generation)return;for(const event of r.events||[])this.deliver(event)}
+   catch(e){if(!this.destroyed&&n===this.generation)this.lost();return;}
+  }
+ }
+ deliver(e){
+  if(e.kind==='incoming'){const c=new RelayConnection(this,e.channel,e.peer,true);this.channels.set(c.id,c);this.emit('connection',c);return;}
+  const c=this.channels.get(e.channel);
+  if(e.kind==='error'){if(c)c.finish();this.emit('error',{type:e.type});return;}
+  if(!c)return;
+  if(e.kind==='open'){if(!c.closed){c.open=true;c.emit('open')}}
+  else if(e.kind==='data')c.emit('data',e.data);
+  else if(e.kind==='close')c.finish();
+ }
+ connect(peer){if(!this.open||this.disconnected)throw Error('Serviço desconectado');const id='c'+crypto.randomUUID().replaceAll('-','');const c=new RelayConnection(this,id,peer);this.channels.set(id,c);this.send({kind:'connect',target:peer,channel:id});return c}
+ send(message){if(this.destroyed||!this.open)return;const n=this.generation;this.outbound=this.outbound.then(async()=>{if(n!==this.generation||this.destroyed)return;try{await this.request('/relay/send',message,this.abort.signal)}catch(e){if(e.status===404){this.channels.get(message.channel)?.finish();return;}if(n===this.generation)this.lost()}})}
+ lost(){if(this.destroyed||this.disconnected)return;this.open=false;this.disconnected=true;this.generation++;this.abort.abort();for(const c of [...this.channels.values()])c.finish();this.emit('disconnected')}
+ reconnect(){if(this.destroyed||!this.disconnected)return;this.register()}
+ destroy(){if(this.destroyed)return;this.destroyed=true;this.open=false;this.generation++;this.abort?.abort();for(const c of [...this.channels.values()])c.finish();if(this.session)fetch(RELAY_URL+'/relay/close',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+this.session},body:'{}',keepalive:true}).catch(()=>{});this.emit('close')}
+}
+
 let expiredGameId=null,hostLostAt=null,readyPending=false,readyTimer=null;
 let quickJoinRequested=false,quickJoinTimer=null;
 let signalTimer=null,signalAttempt=0,signalId='',guestName='',signalStopped=false;
 let lastHost=Date.now();let peer=null,hostConn=null,hosting=false,H=null,V=null,session=0,retry=null,connectionTimer=null,guestToken='',targetCode='',joinStarted=0,recorded=new Set();const links=new Map();
 function go(id){cancelStoneDrag();document.querySelectorAll('main section').forEach(e=>e.classList.toggle('active',e.id===id));document.body.classList.toggle('match-mode',id==='partida'||id==='tablePreview');if(id!=='partida'&&id!=='tablePreview'&&document.fullscreenElement)document.exitFullscreen?.().catch(()=>{});if(id==='inicio')renderHistory();if(id==='partida')requestAnimationFrame(renderBoard);if(id==='ajustes')requestAnimationFrame(renderSequenceSample)}
 async function fullscreenMatch(){if(!document.body.classList.contains('match-mode'))return;try{if(!document.fullscreenElement&&document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen()}catch{}renderBoard()}
-function tell(s){$('network').textContent=s;if($('joinProgress')&&signalId&&!hosting)$('joinProgress').textContent=s}function error(s){$('error').textContent=s;if($('lobbyFeedback'))$('lobbyFeedback').textContent=s;if(s&&readyPending){readyPending=false;clearTimeout(readyTimer);refreshReadyControl()}if($('lobbyReload'))$('lobbyReload').hidden=hosting||!s.includes('Atualize');}
+function tell(s){$('network').textContent=s;if($('joinProgress')&&!hosting)$('joinProgress').textContent=s}function error(s){$('error').textContent=s;if($('lobbyFeedback'))$('lobbyFeedback').textContent=s;if(s&&readyPending){readyPending=false;clearTimeout(readyTimer);refreshReadyControl()}if($('lobbyReload'))$('lobbyReload').hidden=hosting||!s.includes('Atualize');}
 function read(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}}function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
 function renderHistory(){const history=read('domino.friends.history',[]);$('history').innerHTML=history.slice(0,12).map(x=>`<p>${esc(x.date)} • ${esc(x.mode)} • ${esc(x.text)}</p>`).join('')||'<p>Nenhuma partida concluída.</p>';$('clearHistoryBtn').disabled=history.length===0;}
 // Exclui somente o histórico local; preserva mesa, preferências, ranking e conquistas.
@@ -705,7 +759,7 @@ function ensureSignal(s=session){
 function openSignal(s){
  if(s!==session||signalStopped)return;
  let active;
- try{active=new Peer(signalId,{debug:0});peer=active}catch(e){networkError(e,s);return;}
+ try{active=RELAY_URL?new RelayPeer(signalId,{ownerKey:hosting?read('domino.family.owner',''):''}):new Peer(signalId,{debug:0});peer=active}catch(e){networkError(e,s);return;}
  const current=()=>s===session&&peer===active;
  active.on('open',()=>{
   if(!current())return;
@@ -722,12 +776,12 @@ function openSignal(s){
 }
 async function createRoom(){
  const name=$('nome').value.trim();if(!name)return error('Informe seu nome.');
- if(!canReplace())return;resetNetwork();hosting=true;const code=uuid().slice(0,12);
+ if(!canReplace())return;resetNetwork();hosting=true;let code;try{code=RELAY_URL?await familyRoomCode():uuid().slice(0,12)}catch{hosting=false;return error('Não foi possível salvar o acesso fixo neste navegador. Abra o jogo no Safari e tente novamente.')}
  H={code,mode:$('modo').value,count:Number($('qtd').value),players:[{name:name.slice(0,32),token:'host',connected:true,ready:true,last:Date.now()}],seq:0,game:null};
  signalId='domino-'+code;tell('Conectando a mesa…');$('createBtn').disabled=true;openSignal(session);
  const s=session;connectionTimer=setTimeout(()=>{if(s===session&&!V){$('createBtn').disabled=false;error('O serviço de convites não respondeu. Estamos tentando reconectar a mesma mesa.');ensureSignal(s)}},20000);
 }
-function validCode(x){return /^[a-z0-9]{12}$/.test(x)}
+function validCode(x){return /^(?:[a-z0-9]{12}|[a-f0-9]{24})$/.test(x)}
 function networkError(e,s){
  if(s!==session)return;
  const type=e?.type;
@@ -737,21 +791,21 @@ function networkError(e,s){
   error(type==='unavailable-id'?'O código da mesa ainda está registrado. Aguarde alguns segundos e toque em Reconectar mesa.':'O navegador ou o serviço de convites não permitiu abrir a conexão.');signalStatus(false);return;
  }
  if(type==='peer-unavailable'){
-  error('Aguardando o dono voltar à mesa. A entrada será tentada novamente automaticamente.');
+  if(familyAccess){error('');tell('Esperando seu amigo abrir a mesa. Você não precisa fazer nada.')}else error('Aguardando o dono voltar à mesa. A entrada será tentada novamente automaticamente.');
   if(!hosting){if(hostConn&&!hostConn.open){const old=hostConn;hostConn=null;old.close()}queueReconnect(s,guestName)}return;
  }
  error(type==='webrtc'?'Não foi possível conectar os aparelhos. Tentando novamente…':'O serviço de conexão da mesa foi interrompido. Reconectando automaticamente…');
  scheduleSignal(s);if(!hosting)queueReconnect(s,guestName);
 }
 function joinRoom(){
- const code=$('code').value.trim().toLowerCase(),name=$('guestName').value.trim()||'Amigo';
- if(!validCode(code))return error('O código deve conter 12 letras ou números.');
+ const code=$('code').value.trim().toLowerCase(),name=$('guestName').value.trim()||(familyAccess?'Pai':'Amigo');
+ if(!validCode(code))return error('Abra o convite enviado pelo seu amigo.');
  if(!canReplace())return;resetNetwork();quickJoinRequested=true;targetCode=code;guestName=name;guestToken=uuid();
- try{const old=sessionStorage.getItem('domino.token.'+code);if(old)guestToken=old;else sessionStorage.setItem('domino.token.'+code,guestToken)}catch{}
+ try{const storage=familyAccess?localStorage:sessionStorage;const old=storage.getItem('domino.token.'+code);if(/^[a-f0-9]{32}$/.test(old||''))guestToken=old;else storage.setItem('domino.token.'+code,guestToken)}catch{}
  if($('guestName').value.trim())save('domino.friends.name',name);tell('Entrando na mesa… Aguarde um instante.');$('joinBtn').disabled=true;joinStarted=Date.now();
  // ID local evita depender de uma requisição HTTP adicional para entrar.
  signalId='domino-guest-'+uuid();openSignal(session);const s=session;
- connectionTimer=setTimeout(()=>{if(s===session&&!V){$('joinBtn').disabled=false;error('Aguardando conexão com a mesa. Peça ao dono para voltar ao jogo; tentaremos novamente automaticamente.')}},25000);
+ connectionTimer=setTimeout(()=>{if(s===session&&!V){$('joinBtn').disabled=false;familyAccess?tell('Esperando seu amigo. A conexão continua automaticamente.'):error('Aguardando conexão com a mesa. Peça ao dono para voltar ao jogo; tentaremos novamente automaticamente.')}},25000);
 }
 function connectToHost(s,name){
  if(s!==session||signalStopped||!peer||peer.destroyed||localReconnectExpired())return;
@@ -776,7 +830,7 @@ function connectToHost(s,name){
 }
 function queueReconnect(s,name){
  clearTimeout(retry);if(s!==session||signalStopped||localReconnectExpired())return;
- if(Date.now()-joinStarted>RECONNECT_MS&&(!V||V.game?.paused)){tell('Reconexão expirada. Toque em Reconectar mesa para tentar novamente.');signalStatus(false);return;}
+ if((!familyAccess||V?.game)&&Date.now()-joinStarted>RECONNECT_MS&&(!V||V.game?.paused)){tell('Reconexão expirada. Toque em Reconectar mesa para tentar novamente.');signalStatus(false);return;}
  retry=setTimeout(()=>{if(s!==session)return;if(peer?.open&&!peer.disconnected)connectToHost(s,name||guestName||'Amigo');else{scheduleSignal(s);queueReconnect(s,name)}},2500);
 }
 function reconnectRoom(){
@@ -822,7 +876,7 @@ function reportPresence(){
 }
 document.addEventListener('visibilitychange',reportPresence);
 window.addEventListener('pageshow',()=>{if(document.visibilityState==='visible')reportPresence()});
-window.addEventListener('online',reportPresence);
+window.addEventListener('online',()=>{if(familyAccess&&!V?.game)joinStarted=Date.now();reportPresence()});
 function reject(c,message){if(c?.open)c.send({type:'error',message});else error(message)}
 function sendAction(m){unlockSound();error('');if(!V)return;const action={...m,seq:V.seq,version:m.type==='ready'?(V.room.rulesVersion||RULE_VERSION):RULE_VERSION};if(hosting){handleAction(0,action,null);if(['start','rematch'].includes(m.type)&&V?.game&&!V.game.over)fullscreenMatch()}else if(hostConn?.open){try{hostConn.send(action)}catch{error('Não foi possível confirmar. Reconectando à mesa…');queueReconnect(session)}}else error('Você está desconectado. Aguarde a reconexão.')}
 function handleAction(i,m,c,automatic=false){if(!H||!H.players[i]||!H.players[i].connected)return;if(m.type==='ready'){if(H.game)return;if(m.version!==RULE_VERSION)return reject(c,'Atualize o jogo para usar as regras atuais e tente novamente.');H.players[i].ready=true;publish();return}if(m.type==='start'){if(i!==0)return reject(c,'Somente o dono inicia a partida.');if(H.game)return;if(H.players.length!==H.count||H.players.some(p=>!p.connected||!p.ready))return reject(c,'Aguarde todos os amigos entrarem e aceitarem as regras.');H.game=newGame(H.count);publish();return}if(m.type==='rematch'){if(i!==0||!H.game?.over)return;if(m.seq!==H.seq)return reject(c,'A mesa foi atualizada. Tente novamente.');if(H.players.length!==H.count||H.players.some(p=>!p.connected))return reject(c,'Aguarde todos os amigos se reconectarem para jogar novamente.');const previous=H.game,carry=H.mode==='Ponta de 5'&&!previous.result?.matchOver&&!previous.result?.aborted;H.game=newGame(H.count,carry?previous.points:null,carry?(previous.round||1)+1:1);publish();return}const g=H.game;if(!g||g.over)return;if(m.type==='leave'){finish('Rodada encerrada: '+H.players[i].name+' desistiu.',true);return}if(H.players.some(p=>!p.connected))return reject(c,'A partida está pausada para reconexão.');if(m.seq!==H.seq)return reject(c,'A mesa foi atualizada. Tente sua jogada novamente.');if(g.turn!==i)return reject(c,'Aguarde sua vez.');if(!automatic&&g.turnDeadline&&Date.now()>=g.turnDeadline){autoPlayTurn();return}if(m.type==='move'){if(!Number.isInteger(m.index)||!['L','R','U','D'].includes(m.side))return;const t=g.hands[i][m.index];if(!t||!sides(g,t).includes(m.side))return reject(c,'Essa pedra não encaixa nessa ponta.');play(g,i,m.index,m.side,H.mode);if(automatic){g.log=H.players[i].name+(automatic.drawn?' comprou '+automatic.drawn+' pedra(s) e jogou automaticamente.':' jogou automaticamente: tempo esgotado.');g.lastAction.automatic=true;}if(!g.hands[i].length){finish('Fim da rodada: mão vazia.');return}advanceTurn(g);publish()}else if(m.type==='draw'){if(g.hands[i].some(t=>sides(g,t).length))return reject(c,'Você tem uma pedra que encaixa.');if(H.mode!=='Fechado'&&g.stock.length){g.hands[i].push(g.stock.pop());extendTurnForDraw(g);g.log=H.players[i].name+(automatic?' comprou uma pedra automaticamente · +3 segundos.':' comprou uma pedra · +3 segundos.');markAction(g,i,'draw');publish();return}g.passes++;g.log=H.players[i].name+(automatic?' passou automaticamente: sem encaixe.':' passou.');markAction(g,i,'pass');if(g.passes>=H.count){if(roundBlocked(g,H.mode)){finish('Jogo trancado.');return}g.passes=0;}advanceTurn(g);publish()}}
@@ -1246,8 +1300,11 @@ function completeQuickJoin(){
 function prepareInviteEntry(code){
  const invited=validCode(code);
  $('joinCodeLabel').hidden=invited;
- $('joinHeading').textContent=invited?'Seu amigo está te esperando':'Jogue com seu amigo';
- $('joinHelp').textContent=invited?'Para entrar na mesa, toque no botão abaixo.':'Digite o código que seu amigo enviou e toque no botão abaixo.';
+ document.body.classList.toggle('family-access',familyAccess);
+ if(familyAccess){$('joinBtn').innerHTML='<span aria-hidden="true" class="family-play-icon">▶</span><span>JOGAR</span>';$("joinHeading").textContent='Dominó em família';$('guestName').value='Pai';}
+ 
+ if(!familyAccess)$('joinHeading').textContent=invited?'Seu amigo está te esperando':'Jogue com seu amigo';
+ $('joinHelp').textContent=familyAccess?'Seu acesso está salvo. Vamos chamar seu amigo.':invited?'Para entrar na mesa, toque no botão abaixo.':'Digite o código que seu amigo enviou e toque no botão abaixo.';
  if(invited)$('code').value=code;
 }
 // O aceite usa a versão das regras enviada pelo dono, para não travar entre versões em cache.
@@ -1268,6 +1325,7 @@ function renderLobby(r,g){
  $('roomSummary').innerHTML=`<span class="badge">MESA ${esc(r.code)}</span><h3>${esc(r.mode)}</h3><p>${r.count} jogadores <span>·</span> <b>Grátis</b></p>`;
  $('seats').innerHTML=Array.from({length:r.count},(_,i)=>{const p=r.players[i];return `<div class="lobby-seat ${p?.connected&&p.ready?'is-ready':''}"><span class="lobby-avatar">${p?esc(p.name.slice(0,1).toUpperCase()):'+'}</span><span><b>${p?esc(p.name)+(i===V.self?' · você':''):'Lugar livre'}</b><small>${!p?'Esperando amigo':!p.connected?'Desconectado':p.ready?'Pronto ✓':'Aguardando entrada'}</small></span></div>`}).join('');
  $('lobbyBrief').textContent=(r.mode==='Ponta de 5'?'Meta: 100 pontos':'7 pedras por jogador')+' · 25s por vez · '+(r.mode==='Fechado'?'Sem compra':'Compra: +3s');
+ $('familyInviteControls').hidden=!RELAY_URL||!hosting||!!r.botMode;
  $('rules').textContent=r.rulesText||rules(r);$('inviteControls').hidden=!hosting||!!r.botMode;$('inviteLink').value=inviteURL(r.code);refreshReadyControl();
  $('startBtn').hidden=!hosting;$('startBtn').disabled=!!g||joined!==r.count||prepared!==r.count;
  $('lobbyStatus').textContent=hosting?(prepared===r.count?'Todos prontos. Toque em Iniciar partida.':prepared+' de '+r.count+' prontos. Aguardando os amigos.'):(ready?'Tudo certo! Agora é só esperar seu amigo iniciar o jogo.':readyPending?'Confirmando com o dono da mesa…':'Toque em Entrar para jogar.');
@@ -1285,6 +1343,35 @@ function resultSummary(r,g){
 }
 function render(){if(!V)return;const r=V.room,g=V.game;renderLobby(r,g);if(!g)return;$('gameTitle').textContent=r.mode+(r.botMode?' · Robô':'');renderPlayers(r,g,V.self);renderBoard();$('gameStatus').textContent=g.paused?'Partida pausada. Aguardando reconexão por até 120 segundos.':g.log+' '+(g.turn===V.self?'Sua vez. Arraste uma pedra até uma das pontas.':r.players[g.turn].name+' está jogando.');const disabled=g.turn!==V.self||g.paused||g.over;renderHand();$('draw').disabled=disabled||g.hand.some(t=>sides(g,t).length>0);$('draw').textContent=r.mode==='Fechado'||!g.stock?'Passar a vez':'Comprar pedra';$('stock').textContent='Estoque '+g.stock+' · Mão '+g.hand.length;$('stockPile').querySelector('strong').textContent=g.stock;$('stockPile').hidden=r.mode==='Fechado';if(g.over){$('resultTitle').textContent=g.result.matchOver||g.result.aborted?'Fim da partida':'Resultado da rodada'+(r.mode==='Ponta de 5'?' '+(g.round||1):'');$('result').innerHTML=`${resultSummary(r,g)}<p>${esc(g.result.reason)}</p>${r.mode==='Ponta de 5'?`<p>${g.result.bonus?`Bônus das sobras: ${g.result.bonusBase} pontos nas mãos dos adversários → +${g.result.bonus} pontos para ${esc(r.players[g.result.roundWinners[0]].name)}.`:g.result.matchOver?'Meta de 100 pontos atingida.':'Sem bônus de sobras nesta rodada.'}</p><h3>Placar acumulado · meta 100</h3>${r.players.map((p,i)=>`<p>${esc(p.name)}: <strong>${g.points[i]} / 100</strong></p>`).join('')}<p>${g.result.aborted?'Partida encerrada por desistência ou desconexão.':g.result.matchOver?'Partida encerrada. Jogar novamente inicia um novo placar.':'Os pontos ficam guardados para a próxima rodada.'}</p>`:''}${g.allHands?'<h3>Peças de todos os amigos</h3>':'<p>As mãos dos amigos não estão disponíveis após a desconexão.</p>'}${(g.allHands||[]).map((h,i)=>`<p>${esc(r.players[i].name)} • soma ${g.result.sums[i]} • pontos ${g.points[i]}</p>${h.map(t=>tile(t)).join('')||'Sem pedras'}`).join('')}`;$('rematchBtn').hidden=!hosting;$('rematchBtn').textContent=r.mode==='Ponta de 5'&&!g.result.matchOver&&!g.result.aborted?'Próxima rodada':'Jogar novamente';$('rematchBtn').disabled=r.players.length!==r.count||r.players.some(p=>!p.connected);$('rematchStatus').textContent=hosting?($('rematchBtn').disabled?'Aguardando os amigos se reconectarem.':(r.mode==='Ponta de 5'&&!g.result.matchOver&&!g.result.aborted?'Continuar até 100 pontos, mantendo o placar e os mesmos amigos.':'Mesmos amigos, mesma mesa e mesmas regras. Não precisa enviar outro convite.')):'Aguarde o dono iniciar a próxima rodada. Você continua nesta mesa.'}}
 function openCurrent(){if(!V)return go('entrar');go(V.game?(V.game.over?'resultado':'partida'):'convite')}
+// O identificador é derivado da chave local do dono: o mesmo convite continua
+// válido nas próximas mesas deste aparelho. A chave nunca entra no convite.
+async function familyRoomCode(){
+ let key=read('domino.family.owner','');
+ if(!/^[a-f0-9]{64}$/.test(key)){key=uuid()+uuid();save('domino.family.owner',key);if(read('domino.family.owner','')!==key)throw Error('storage');}
+ const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(key));
+ return Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('').slice(0,24);
+}
+function familyInviteURL(code){const u=new URL(inviteURL(code));u.hash='familia='+code;return u.href}
+function shareFamily(){if(V&&hosting)window.open('https://wa.me/?text='+encodeURIComponent('Pai, este é seu acesso fixo ao nosso dominó. Abra sempre este mesmo link: '+familyInviteURL(V.room.code)),'_blank','noopener,noreferrer')}
+async function copyFamilyInvite(){if(!V||!hosting)return;try{await navigator.clipboard.writeText(familyInviteURL(V.room.code));tell('Acesso fixo copiado. Envie uma única vez ao seu pai.')}catch{error('Use o botão Enviar acesso fixo para meu pai.')}}
+function restoreFamilyAccess(){
+ const hash=location.hash;
+ const direct=hash.startsWith('#familia=')?hash.slice(9):'';
+ const ordinary=hash.startsWith('#mesa=')?hash.slice(6):'';
+ const saved=read('domino.family.guest',null);
+ const code=validCode(direct)?direct:(!hash&&validCode(saved?.code)?saved.code:ordinary);
+ familyAccess=validCode(direct)||(!hash&&validCode(saved?.code));
+ if(familyAccess){
+  save('domino.family.guest',{code});document.title='Dominó em família';
+  // Um manifesto próprio mantém o endereço da família no atalho do celular.
+  const start=new URL(location.href);start.hash='familia='+code;
+  const base=new URL('.',location.href);
+  const manifest={name:'Dominó em família',short_name:'Dominó',start_url:start.href,scope:base.href,display:'standalone',background_color:'#0a211b',theme_color:'#0a211b',icons:[{src:new URL('icon-192.png',base).href,sizes:'192x192',type:'image/png'},{src:new URL('apple-touch-icon.png',base).href,sizes:'180x180',type:'image/png'}]};
+  const link=document.querySelector('link[rel="manifest"]');if(link)link.href=URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'}));
+ }
+ prepareInviteEntry(code);
+ if(validCode(code)){go('entrar');if(familyAccess)setTimeout(()=>{if(!V&&!signalId)joinRoom()},300)}else go('inicio');
+}
 function inviteURL(code){const u=new URL(location.href);u.searchParams.set('v',APP_BUILD);u.hash='mesa='+code;return u.href}
 function share(){if(V)window.open('https://wa.me/?text='+encodeURIComponent('Vamos jogar dominó online? Entre na minha mesa, veja as regras e confirme. Partida gratuita: '+inviteURL(V.room.code)),'_blank','noopener,noreferrer')}
 async function copyInvite(){try{await navigator.clipboard.writeText(inviteURL(V.room.code));tell('Link copiado. Envie para seus amigos.')}catch{$('inviteLink').select();error('Selecione e copie o link da mesa.')}}
@@ -1691,7 +1778,7 @@ resetNetwork=function(){Bot.clear();botBaseReset();};
 
 syncSoundButtons();
 $('stoneSamples').innerHTML=[[6,6],[6,3],[2,4],[0,1]].map(t=>tile(t,'',true)).join('');
-$('guestName').value=read('domino.friends.name','');$('nome').value=read('domino.friends.name','');const codeFromLink=location.hash.startsWith('#mesa=')?location.hash.slice(6):'';prepareInviteEntry(codeFromLink);if(validCode(codeFromLink)){go('entrar')}else go('inicio');
+$('guestName').value=read('domino.friends.name','');$('nome').value=read('domino.friends.name','');restoreFamilyAccess();
 </script></html>
 
 
