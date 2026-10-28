@@ -665,7 +665,8 @@ const uuid=()=>crypto.randomUUID().replaceAll('-','');
 const RECONNECT_MS=120000;
 // Preenchido com o endereço verificado do transporte HTTPS na publicação.
 const RELAY_URL='https://domino-clube-emisson.onrender.com';
-let familyAccess=false;
+let familyAccess=false,familyTabChannel=null,familyChannelCode='';
+const familyTabId=uuid();
 // Compatibilidade com o transporte já usado pelo jogo. Cada canal mantém sua ordem.
 class RelayEvents {
  constructor(){this.events=new Map()}
@@ -800,7 +801,7 @@ function networkError(e,s){
 function joinRoom(){
  const code=$('code').value.trim().toLowerCase(),name=$('guestName').value.trim()||(familyAccess?'Pai':'Amigo');
  if(!validCode(code))return error('Abra o convite enviado pelo seu amigo.');
- if(!canReplace())return;resetNetwork();quickJoinRequested=true;targetCode=code;guestName=name;guestToken=uuid();
+ if(!canReplace())return;if(familyAccess)claimFamilyTab(code);resetNetwork();quickJoinRequested=true;targetCode=code;guestName=name;guestToken=uuid();
  try{const storage=familyAccess?localStorage:sessionStorage;const old=storage.getItem('domino.token.'+code);if(/^[a-f0-9]{32}$/.test(old||''))guestToken=old;else storage.setItem('domino.token.'+code,guestToken)}catch{}
  if($('guestName').value.trim())save('domino.friends.name',name);tell('Entrando na mesa… Aguarde um instante.');$('joinBtn').disabled=true;joinStarted=Date.now();
  // ID local evita depender de uma requisição HTTP adicional para entrar.
@@ -841,7 +842,7 @@ function reconnectRoom(){
 function attachIncoming(c,s){let idx=-1,joined=false;const timeout=setTimeout(()=>{if(!joined)c.close()},15000);c.on('data',m=>{if(s!==session||!H||!m||typeof m!=='object')return;expireDisconnected();if(!joined){if(m.type!=='join'||m.code!==H.code||typeof m.token!=='string'||!/^[a-f0-9]{32}$/.test(m.token)||typeof m.name!=='string')return;idx=H.players.findIndex(p=>p.token===m.token);if(idx<0){if(H.game){c.send({type:'error',message:'A partida já começou. Aguarde a próxima mesa.',fatal:true});setTimeout(()=>c.close(),500);return}idx=H.players.findIndex((p,i)=>i>0&&!p.connected);if(idx<0)idx=H.players.length;if(idx>=H.count){c.send({type:'error',message:'Esta mesa tem '+H.count+' lugares e está cheia. O dono precisa criar uma mesa maior para receber mais amigos.',fatal:true});setTimeout(()=>c.close(),500);return}H.players[idx]={name:m.name.trim().slice(0,32)||'Amigo',token:m.token,ready:false,connected:true,last:Date.now()};}joined=true;clearTimeout(timeout);const old=links.get(idx);links.set(idx,c);if(old&&old!==c)old.close();H.players[idx].connected=true;H.players[idx].last=Date.now();H.players[idx].lostAt=null;H.players[idx].away=false;publish();return}if(links.get(idx)!==c)return;H.players[idx].last=Date.now();if(m.type==='presence'){expireDisconnected();if(m.away){H.players[idx].away=true;H.players[idx].connected=false;H.players[idx].lostAt??=Date.now();}else{H.players[idx].away=false;H.players[idx].connected=true;H.players[idx].lostAt=null;}publish();return;}if(H.players[idx].away)return;if(!H.players[idx].connected){H.players[idx].connected=true;H.players[idx].lostAt=null;publish()}if(m.type==='ping'){c.send({type:'pong'});return}handleAction(idx,m,c)});c.on('close',()=>{clearTimeout(timeout);if(s!==session||!H||idx<0||links.get(idx)!==c)return;links.delete(idx);if(!H.game){H.players[idx].connected=false;H.players[idx].ready=false;H.players[idx].lostAt??=Date.now()}else{H.players[idx].connected=false;H.players[idx].lostAt??=Date.now()}publish()});c.on('error',()=>{});}
 function selfView(idx){const r={code:H.code,mode:H.mode,count:H.count,rulesVersion:RULE_VERSION,rulesText:rules(H),botMode:!!H.botMode,botLevel:H.botLevel||null,players:H.players.map(p=>({name:p.name,connected:p.connected,ready:p.ready,lostAt:p.lostAt||null,bot:!!p.bot}))};const g=H.game;let game=null;if(g)game={id:g.id,chain:g.chain,hand:g.hands[idx],counts:g.hands.map(h=>h.length),stock:g.stock.length,turn:g.turn,points:[...g.points],turnDeadline:g.turnDeadline,turnRemaining:g.turnRemaining,timerPaused:!!g.timerPaused,target:g.target||100,round:g.round||1,over:g.over,paused:!g.over&&H.players.some(p=>!p.connected),reconnectDeadline:reconnectDeadline(H.players),log:g.log,lastAction:g.lastAction,playerActions:g.playerActions,spinner:g.spinner||null,result:g.result,allHands:g.over?g.hands:null};return {type:'state',seq:H.seq,serverNow:Date.now(),self:idx,room:r,game}}
 function publish(){if(H.game)syncTurnClock(H.game);H.seq++;receive(selfView(0));for(const [i,c] of [...links])if(c.open){try{c.send(selfView(i))}catch{try{c.close()}catch{}}}}
-function receive(v){if(v.game?.id===expiredGameId&&!v.game.over)return;if(V&&v.seq<V.seq)return;const before=V;V=v;hostLostAt=null;if(v.room.players[v.self]?.ready||v.game){readyPending=false;clearTimeout(readyTimer);}if(Number.isFinite(v.serverNow))serverClockOffset=v.serverNow-Date.now();playConfirmedSound(before,v);if(!before||(!before.game&&v.game)||(before.game?.over&&v.game&&!v.game.over&&before.game.id!==v.game.id))go(v.game?'partida':'convite');if(v.game?.over)go('resultado');if(before?.game&&!v.game)go('convite');tell(v.game?.paused?'Partida pausada: aguardando reconexão de um amigo.':v.game?(v.room.botMode?'Modo robô · '+Bot.levels[v.room.botLevel]:'Conectado à mesa '+v.room.code):hosting?'Mesa online. Convide seus amigos.':'Você está na mesa. Leia as regras e confirme.');render();completeQuickJoin();showScoreGains(before,v);showActionEffects(before,v);updateTurnClock();updateReconnectNotice();if(v.game?.over&&!recorded.has(v.game.id)){recorded.add(v.game.id);const h=read('domino.friends.history',[]);h.unshift({date:new Date().toLocaleString('pt-BR'),mode:v.room.mode+(v.room.botMode?' · Robô '+Bot.levels[v.room.botLevel]:''),text:v.game.result.text});save('domino.friends.history',h.slice(0,100))}}
+function receive(v){if(v.game?.id===expiredGameId&&!v.game.over)return;if(V&&v.seq<V.seq)return;const before=V;V=v;hostLostAt=null;if(v.room.players[v.self]?.ready||v.game){readyPending=false;clearTimeout(readyTimer);}if(Number.isFinite(v.serverNow))serverClockOffset=v.serverNow-Date.now();playConfirmedSound(before,v);if(!before||(!before.game&&v.game)||(before.game?.over&&v.game&&!v.game.over&&before.game.id!==v.game.id))go(v.game?'partida':'convite');if(v.game?.over)go('resultado');if(before?.game&&!v.game)go('convite');tell(v.game?.paused?'Partida pausada: aguardando reconexão de um amigo.':v.game?(v.room.botMode?'Modo robô · '+Bot.levels[v.room.botLevel]:'Conectado à mesa '+v.room.code):hosting?'Mesa online. Convide seus amigos.':familyAccess?'Você já está na mesa. Seu amigo vai iniciar o jogo.':'Você está na mesa. Leia as regras e confirme.');render();completeQuickJoin();showScoreGains(before,v);showActionEffects(before,v);updateTurnClock();updateReconnectNotice();if(v.game?.over&&!recorded.has(v.game.id)){recorded.add(v.game.id);const h=read('domino.friends.history',[]);h.unshift({date:new Date().toLocaleString('pt-BR'),mode:v.room.mode+(v.room.botMode?' · Robô '+Bot.levels[v.room.botLevel]:''),text:v.game.result.text});save('domino.friends.history',h.slice(0,100))}}
 // O prazo usa horário absoluto: continua válido mesmo se o celular suspender os timers.
 function reconnectDeadline(players){const lost=players.filter(p=>!p.connected&&Number.isFinite(p.lostAt)).map(p=>p.lostAt);return lost.length?Math.min(...lost)+RECONNECT_MS:null;}
 function expireDisconnected(now=Date.now()){
@@ -1354,6 +1355,27 @@ async function familyRoomCode(){
 function familyInviteURL(code){const u=new URL(inviteURL(code));u.hash='familia='+code;return u.href}
 function shareFamily(){if(V&&hosting)window.open('https://wa.me/?text='+encodeURIComponent('Pai, este é seu acesso fixo ao nosso dominó. Abra sempre este mesmo link: '+familyInviteURL(V.room.code)),'_blank','noopener,noreferrer')}
 async function copyFamilyInvite(){if(!V||!hosting)return;try{await navigator.clipboard.writeText(familyInviteURL(V.room.code));tell('Acesso fixo copiado. Envie uma única vez ao seu pai.')}catch{error('Use o botão Enviar acesso fixo para meu pai.')}}
+// Se o mesmo convite abrir em outra aba, a nova aba assume o acesso e a
+// anterior para de reconectar, evitando disputa pelo lugar do mesmo jogador.
+function claimFamilyTab(code){
+ const pauseOld=message=>{
+  if(!familyAccess||message?.code!==familyChannelCode||message.id===familyTabId)return;
+  resetNetwork();go('entrar');$('joinBtn').disabled=false;
+  tell('Seu jogo foi aberto em outra janela. Toque em JOGAR para voltar aqui.');
+ };
+ if(familyChannelCode!==code){
+  familyTabChannel?.close();familyChannelCode=code;
+  if(typeof BroadcastChannel!=='undefined'){
+   familyTabChannel=new BroadcastChannel('domino-family-'+code);
+   familyTabChannel.onmessage=event=>pauseOld(event.data);
+  }
+ }
+ if(!claimFamilyTab.storageListener){
+  window.addEventListener('storage',event=>{if(event.key==='domino.family.active-tab'){try{pauseOld(JSON.parse(event.newValue))}catch{}}});
+  claimFamilyTab.storageListener=true;
+ }
+ const message={code,id:familyTabId};save('domino.family.active-tab',message);familyTabChannel?.postMessage(message);
+}
 function restoreFamilyAccess(){
  const hash=location.hash;
  const direct=hash.startsWith('#familia=')?hash.slice(9):'';
@@ -1369,7 +1391,7 @@ function restoreFamilyAccess(){
   const manifest={name:'Dominó em família',short_name:'Dominó',start_url:start.href,scope:base.href,display:'standalone',background_color:'#0a211b',theme_color:'#0a211b',icons:[{src:new URL('icon-192.png',base).href,sizes:'192x192',type:'image/png'},{src:new URL('apple-touch-icon.png',base).href,sizes:'180x180',type:'image/png'}]};
   const link=document.querySelector('link[rel="manifest"]');if(link)link.href=URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'}));
  }
- prepareInviteEntry(code);
+ prepareInviteEntry(code);if(familyAccess)tell('Abrindo seu acesso salvo…');
  if(validCode(code)){go('entrar');if(familyAccess)setTimeout(()=>{if(!V&&!signalId)joinRoom()},300)}else go('inicio');
 }
 function inviteURL(code){const u=new URL(location.href);u.searchParams.set('v',APP_BUILD);u.hash='mesa='+code;return u.href}
